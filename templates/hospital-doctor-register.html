@@ -1,71 +1,25 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <!-- doccure/search.html  30 Nov 2019 04:12:16 GMT -->
-  <head>
+<head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=0"
-    />
-    <title>HealthStack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
+    <title>HealthStack - Doctor Registration</title>
 
     <!-- Favicons -->
-    <link
-      type="image/x-icon"
-      href="{% static 'HealthStack-System/images/Normal/favicon.png' %}"
-      rel="icon"
-    />
+    <link type="image/x-icon" href="{% static 'HealthStack-System/images/Normal/favicon.png' %}" rel="icon" />
 
     <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}"
-    />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}" />
 
     <!-- Fontawesome CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}"
-    />
-
-    <!-- Datetimepicker CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/css/Normalbootstrap-datetimepicker.min.css' %}"
-    />
-
-    <!-- Select2 CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/select2/css/select2.min.css'%}"
-    />
-
-    <!-- Fancybox CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fancybox/jquery.fancybox.min.css'%}"
-    />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}" />
 
     <!-- Main CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/css/Normal/style.css' %}"
-    />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/css/Normal/style.css' %}" />
 
-    <link rel="stylesheet"href="{% static 'HealthStack-System/css/Normal/search2.css' %}">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="assets/js/html5shiv.min.js"></script>
-      <script src="assets/js/respond.min.js"></script>
-    <![endif]-->
     <style>
-
     .drop-zone {
       max-width: auto;
       height: 200px;
@@ -120,124 +74,286 @@
         align-items: center;
     }
 
+    .alert-info {
+      background-color: #d1ecf1;
+      border-color: #bee5eb;
+      color: #0c5460;
+    }
 
+    .alert-warning {
+      background-color: #fff3cd;
+      border-color: #ffeaa7;
+      color: #856404;
+    }
 
+    .badge {
+      font-size: 0.875em;
+    }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <!-- Main Wrapper -->
     <div class="main-wrapper">
-      <!-- Header -->
-      <header class="header">
+        <!-- Header -->
+        <header class="header">
             {% if user.is_authenticated and user.is_patient %}
-		    {% include 'patient_navbar.html' %}
-	        {% endif %}
-				
-		    {% if user.is_authenticated and user.is_doctor %}
-			{% include 'doctor-navbar.html' %}
-			{% endif %}
-      </header>
-      <!-- /Header -->
+                {% include 'patient_navbar.html' %}
+            {% endif %}
+                    
+            {% if user.is_authenticated and user.is_doctor %}
+                {% include 'doctor-navbar.html' %}
+            {% endif %}
+        </header>
+        <!-- /Header -->
 
-      <!-- Breadcrumb -->
-      <div class="breadcrumb-bar">
-				<div class="container-fluid">
-					<div class="row align-items-center">
-						<div class="col-md-6 col-6">
-							<nav aria-label="breadcrumb" class="page-breadcrumb">
-								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Hospital Doctor Register</li>
-								</ol>
-							</nav>
-							<h2 class="breadcrumb-title">Hospital Doctor Register</h2>
-						</div>
-						
-					</div>
-				</div>
-			</div>
-      <!-- /Breadcrumb -->
-
-      <!-- Page Content -->
-      <div class="content">
-        <div class="container-fluid">
-          <div class="row">
-            <!-- Profile Sidebar -->
-            <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-              <div>
-			    {% include 'doctor-sidebar.html' %}
-
-              </div>
-            </div>
-            <!-- / Profile Sidebar -->
-
-            <div class="col-md-12 col-lg-8 col-xl-9">
-              <form action="{% url 'hospital-doctor-register' pk=hospitals.hospital_id %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="card-title" style="text-align: center;">Hospital Registation</h2>
-                        <hr>
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <label class="col-form-label" style="font-size: 20px;">Choose Department</label>
-                                <div class="col-md-10">
-     
-                                    {% for department in departments %}
-                                    <div class="radio">
-                                        <label>
-                                            <input type="radio" value="{{ department.hospital_department_id }}" name="department_radio"> {{ department.hospital_department_name }}
-                                        </label>
-                                    </div>
-                                    {% endfor %}
-                                    
-                                    
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="col-form-label" style="font-size: 20px;">Choose Specialization</label>
-                                <div class="col-md-10">
-
-                                    {% for specialization in specializations %}
-                                      
-                                      <div class="form-check">
-                                        <input class="form-check-input" type="radio" value="{{ specialization.specialization_id }}" name="specialization_radio" id="flexRadioDefault2">
-                                        <label class="form-check-label" for="flexRadioDefault2">
-                                          {{ specialization.specialization_name }}
-                                        </label>
-                                      </div>
-                                      {% endfor %}
-                             
-                                </div>
-                            </div>                                       
-                        </div>
-
-                        <label class="col-form-label" style="font-size: 20px;text-align: center;">Drop Certificate</label>
-                        <div class="drop-zone">
-                            
-                            <span class="drop-zone__prompt">Drop file here or click to upload</span>
-                            <input type="file" name="certificate_image" class="drop-zone__input">
-                        </div>
-
+        <!-- Breadcrumb -->
+        <!-- <div class="breadcrumb-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-6 col-6">
+                        <nav aria-label="breadcrumb" class="page-breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'hospital_home' %}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'hospital-profile' hospitals.hospital_id %}">Hospital Profile</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Doctor Registration</li>
+                            </ol>
+                        </nav>
+                        <h2 class="breadcrumb-title">Hospital Doctor Register</h2>
+                    </div>
+                    <div class="col-md-6 col-6 text-end">
+                   
+                        {% if doctor and doctor.doctor_id %}
+                            <a href="{% url 'doctor-profile-settings' doctor.doctor_id %}" class="btn btn-primary">
+                                My Profile
+                            </a>
+                        {% else %}
+                           
+                            <a href="{% url 'doctor-dashboard' %}" class="btn btn-warning">
+                                My Dashboardz
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="submit-section submit-btn-bottom center">
-                    <button type="submit" class="btn btn-info submit-btn" style="min-width: 205px;">Submit</button>
-                </div>
-              </form>  
-                          
             </div>
-          </div>
-        </div>
-      </div>
-      <!-- /Page Content -->
+        </div> -->
+        <!-- /Breadcrumb -->
 
-     <!-- Footer -->
-     {% include 'footer.html' %}
-     <!-- /Footer -->
+        <!-- Page Content -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- Profile Sidebar -->
+                    <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+                        <div>
+                            <!-- Safe Sidebar Inclusion -->
+                            {% if doctor and doctor.doctor_id %}
+                                {% include 'doctor-sidebar.html' %}
+                            {% else %}
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Doctor Menu</h5>
+                                        <div class="list-group">
+                                            <a href="{% url 'doctor-dashboard' %}" class="list-group-item list-group-item-action">
+                                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                                            </a>
+                                            <a href="{% url 'multiple-hospital' %}" class="list-group-item list-group-item-action">
+                                                <i class="fas fa-hospital"></i> Browse Hospitals
+                                            </a>
+                                            <a href="{% url 'hospital_home' %}" class="list-group-item list-group-item-action">
+                                                <i class="fas fa-home"></i> Home
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- / Profile Sidebar -->
+
+                    <div class="col-md-12 col-lg-8 col-xl-9">
+                        <!-- Messages Display -->
+                        {% if messages %}
+                        <div class="messages mb-4">
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if hospitals.hospital_id %}
+                        
+                        <!-- Registration Status Alert -->
+                        {% if already_registered %}
+                        <div class="alert alert-info mb-4">
+                            <h5><i class="fas fa-info-circle"></i> Registration Status</h5>
+                            <p>You have already applied for registration at this hospital.</p>
+                            {% with reg=doctor_list.first %}
+                                {% if reg %}
+                                <p><strong>Status:</strong> 
+                                    <span class="badge 
+                                        {% if reg.register_status == 'Accepted' %}bg-success
+                                        {% elif reg.register_status == 'Rejected' %}bg-danger
+                                        {% else %}bg-warning{% endif %}">
+                                        {{ reg.register_status }}
+                                    </span>
+                                </p>
+                                <p><strong>Department:</strong> {{ reg.department_name.hospital_department_name|default:"Not assigned" }}</p>
+                                <p><strong>Specialization:</strong> {{ reg.specialization.specialization_name|default:"Not assigned" }}</p>
+                                {% if reg.register_status == 'Rejected' %}
+                                <div class="mt-2">
+                                    <p class="mb-1"><strong>You can re-apply with updated information:</strong></p>
+                                </div>
+                                {% endif %}
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Registration Form -->
+                        {% if not already_registered or doctor_list.first.register_status == 'Rejected' %}
+                        <form action="{% url 'hospital-doctor-register' pk=hospitals.hospital_id %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h2 class="card-title" style="text-align: center;">
+                                        {% if already_registered and doctor_list.first.register_status == 'Rejected' %}
+                                            Re-apply for Hospital Registration
+                                        {% else %}
+                                            Hospital Registration
+                                        {% endif %}
+                                    </h2>
+                                    <hr>
+                                    
+                                    <!-- Hospital Information -->
+                                    <div class="alert alert-secondary mb-4">
+                                        <h6><i class="fas fa-hospital"></i> Registering at: <strong>{{ hospitals.hospital_name }}</strong></h6>
+                                        <p class="mb-0">{{ hospitals.address }}</p>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="col-form-label" style="font-size: 18px; font-weight: bold;">
+                                                <i class="fas fa-clinic-medical"></i> Choose Department *
+                                            </label>
+                                            <div class="col-md-12">
+                                                {% if departments %}
+                                                    {% for department in departments %}
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="radio" 
+                                                               value="{{ department.hospital_department_id }}" 
+                                                               name="department_radio" 
+                                                               id="dept_{{ department.hospital_department_id }}"
+                                                               required>
+                                                        <label class="form-check-label" for="dept_{{ department.hospital_department_id }}">
+                                                            {{ department.hospital_department_name }}
+                                                        </label>
+                                                    </div>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <div class="alert alert-warning">
+                                                        <i class="fas fa-exclamation-triangle"></i> No departments available at this hospital.
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="col-form-label" style="font-size: 18px; font-weight: bold;">
+                                                <i class="fas fa-stethoscope"></i> Choose Specialization *
+                                            </label>
+                                            <div class="col-md-12">
+                                                {% if specializations %}
+                                                    {% for spec in specializations %}
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="radio" 
+                                                               value="{{ spec.specialization_id }}" 
+                                                               name="specialization_radio" 
+                                                               id="spec_{{ spec.specialization_id }}"
+                                                               required>
+                                                        <label class="form-check-label" for="spec_{{ spec.specialization_id }}">
+                                                            {{ spec.specialization_name }}
+                                                        </label>
+                                                    </div>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <div class="alert alert-warning">
+                                                        <i class="fas fa-exclamation-triangle"></i> No specializations available at this hospital.
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>                                       
+                                    </div>
+
+                                    <!-- Certificate Upload -->
+                                    <div class="mt-4">
+                                        <label class="col-form-label" style="font-size: 18px; font-weight: bold;">
+                                            <i class="fas fa-file-certificate"></i> Upload Certificate *
+                                        </label>
+                                        <div class="drop-zone">
+                                            <span class="drop-zone__prompt">
+                                                <i class="fas fa-cloud-upload-alt"></i><br>
+                                                Drop certificate file here or click to upload<br>
+                                                <small class="text-muted">Supported formats: PDF, JPG, JPEG, PNG</small>
+                                            </span>
+                                            <input type="file" name="certificate_image" class="drop-zone__input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                        </div>
+                                        <div class="form-text mt-2">
+                                            <i class="fas fa-info-circle"></i> Please upload your medical certificate or license. Maximum file size: 10MB
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="submit-section submit-btn-bottom center mt-4">
+                                <button type="submit" class="btn btn-primary submit-btn" style="min-width: 250px; padding: 12px 30px; font-size: 16px;">
+                                    <i class="fas fa-paper-plane"></i> 
+                                    {% if already_registered and doctor_list.first.register_status == 'Rejected' %}
+                                        Re-submit Registration
+                                    {% else %}
+                                        Submit Registration
+                                    {% endif %}
+                                </button>
+                            </div>
+                        </form>  
+                        {% else %}
+                        <!-- Already Registered Message -->
+                        <div class="alert alert-success text-center">
+                            <i class="fas fa-check-circle fa-2x mb-3"></i>
+                            <h4>Registration Submitted</h4>
+                            <p>Your registration has been submitted and is under review.</p>
+                            <p>Current Status: <span class="badge bg-warning">Pending</span></p>
+                            <a href="{% url 'hospital-profile' hospitals.hospital_id %}" class="btn btn-outline-primary mt-2">
+                                <i class="fas fa-arrow-left"></i> Back to Hospital Profile
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        {% else %}
+                        <div class="alert alert-danger text-center">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h4>Hospital Not Available</h4>
+                            <p>Hospital information is not available. Cannot proceed with registration.</p>
+                            <a href="{% url 'multiple-hospital' %}" class="btn btn-primary mt-2">
+                                <i class="fas fa-hospital"></i> Browse Hospitals
+                            </a>
+                        </div>
+                        {% endif %}
+                                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Content -->
+
+        <!-- Footer -->
+        {% include 'footer.html' %}
+        <!-- /Footer -->
     </div>
     <!-- /Main Wrapper -->
 
@@ -248,99 +364,106 @@
     <script src="{% static 'HealthStack-System/js/Normal/popper.min.js' %}"></script>
     <script src="{% static 'HealthStack-System/js/Normal/bootstrap.min.js' %}"></script>
 
-    <!-- Sticky Sidebar JS -->
-    <script src="{% static 'HealthStack-System/plugins/Normal/theia-sticky-sidebar/ResizeSensor.js' %}"></script>
-    <script src="{% static 'HealthStack-System/plugins/Normal/theia-sticky-sidebar/theia-sticky-sidebar.js' %}"></script>
-
-    <!-- Select2 JS -->
-    <script src="{% static 'HealthStack-System/plugins/Normal/select2/js/select2.min.js'%}"></script>
-
-    <!-- Datetimepicker JS -->
-    <script src="{% static 'HealthStack-System/js/Normal/moment.min.js'%}"></script>
-    <script src="{% static 'HealthStack-System/js/Normal/bootstrap-datetimepicker.min.js'%}"></script>
-
-    <!-- Fancybox JS -->
-    <script src="{% static 'HealthStack-System/plugins/Normal/fancybox/jquery.fancybox.min.js'%}"></script>
-
     <!-- Custom JS -->
     <script src="{% static 'HealthStack-System/Outside_assets/js/script.js' %}"></script>
 
     <script>
         document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
-      const dropZoneElement = inputElement.closest(".drop-zone");
+            const dropZoneElement = inputElement.closest(".drop-zone");
 
-      dropZoneElement.addEventListener("click", (e) => {
-        inputElement.click();
-      });
+            dropZoneElement.addEventListener("click", (e) => {
+                inputElement.click();
+            });
 
-      inputElement.addEventListener("change", (e) => {
-        if (inputElement.files.length) {
-          updateThumbnail(dropZoneElement, inputElement.files[0]);
-        }
-      });
+            inputElement.addEventListener("change", (e) => {
+                if (inputElement.files.length) {
+                    updateThumbnail(dropZoneElement, inputElement.files[0]);
+                }
+            });
 
-      dropZoneElement.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        dropZoneElement.classList.add("drop-zone--over");
-      });
+            dropZoneElement.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                dropZoneElement.classList.add("drop-zone--over");
+            });
 
-      ["dragleave", "dragend"].forEach((type) => {
-        dropZoneElement.addEventListener(type, (e) => {
-          dropZoneElement.classList.remove("drop-zone--over");
+            ["dragleave", "dragend"].forEach((type) => {
+                dropZoneElement.addEventListener(type, (e) => {
+                    dropZoneElement.classList.remove("drop-zone--over");
+                });
+            });
+
+            dropZoneElement.addEventListener("drop", (e) => {
+                e.preventDefault();
+
+                if (e.dataTransfer.files.length) {
+                    inputElement.files = e.dataTransfer.files;
+                    updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+                }
+
+                dropZoneElement.classList.remove("drop-zone--over");
+            });
         });
-      });
 
-      dropZoneElement.addEventListener("drop", (e) => {
-        e.preventDefault();
+        function updateThumbnail(dropZoneElement, file) {
+            let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
 
-        if (e.dataTransfer.files.length) {
-          inputElement.files = e.dataTransfer.files;
-          updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+            // First time - remove the prompt
+            if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+                dropZoneElement.querySelector(".drop-zone__prompt").remove();
+            }
+
+            // First time - there is no thumbnail element, so lets create it
+            if (!thumbnailElement) {
+                thumbnailElement = document.createElement("div");
+                thumbnailElement.classList.add("drop-zone__thumb");
+                dropZoneElement.appendChild(thumbnailElement);
+            }
+
+            thumbnailElement.dataset.label = file.name;
+
+            // Show thumbnail for image files
+            if (file.type.startsWith("image/")) {
+                const reader = new FileReader();
+
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+                };
+            } else {
+                thumbnailElement.style.backgroundImage = null;
+            }
         }
 
-        dropZoneElement.classList.remove("drop-zone--over");
-      });
-    });
-
-    /**
-     * Updates the thumbnail on a drop zone element.
-     *
-     * @param {HTMLElement} dropZoneElement
-     * @param {File} file
-     */
-    function updateThumbnail(dropZoneElement, file) {
-      let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
-
-      // First time - remove the prompt
-      if (dropZoneElement.querySelector(".drop-zone__prompt")) {
-        dropZoneElement.querySelector(".drop-zone__prompt").remove();
-      }
-
-      // First time - there is no thumbnail element, so lets create it
-      if (!thumbnailElement) {
-        thumbnailElement = document.createElement("div");
-        thumbnailElement.classList.add("drop-zone__thumb");
-        dropZoneElement.appendChild(thumbnailElement);
-      }
-
-      thumbnailElement.dataset.label = file.name;
-
-      // Show thumbnail for image files
-      if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
-        };
-      } else {
-        thumbnailElement.style.backgroundImage = null;
-      }
-    }
-
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const departmentSelected = document.querySelector('input[name="department_radio"]:checked');
+                    const specializationSelected = document.querySelector('input[name="specialization_radio"]:checked');
+                    const certificateFile = document.querySelector('input[name="certificate_image"]').files[0];
+                    
+                    let errors = [];
+                    
+                    if (!departmentSelected) {
+                        errors.push('Please select a department');
+                    }
+                    
+                    if (!specializationSelected) {
+                        errors.push('Please select a specialization');
+                    }
+                    
+                    if (!certificateFile) {
+                        errors.push('Please upload a certificate file');
+                    }
+                    
+                    if (errors.length > 0) {
+                        e.preventDefault();
+                        alert('Please fix the following errors:\n\n' + errors.join('\n'));
+                    }
+                });
+            }
+        });
     </script>
-
-    </body>
-
-      <!-- doccure/search.html  30 Nov 2019 04:12:16 GMT -->
-    </html>
+</body>
+</html>

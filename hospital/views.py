@@ -1,8 +1,9 @@
 import email
 from multiprocessing import context
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 # from django.contrib.auth.forms import UserCreationForm
 from .forms import CustomUserCreationForm, PatientForm, PasswordResetForm
 from hospital.models import Hospital_Information, User, Patient 
@@ -33,7 +34,136 @@ from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse
+from doctor.models import Hospital_Department, Specialization, Doctor_Information
+from hospital.models import Hospital_Information
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
+from django.db import transaction, IntegrityError
 
+@csrf_exempt
+def patient_login(request):
+    print("=== LOGIN ATTEMPT ===")
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        print(f"Username: {username}")
+        
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # ⭐️ Check if user is a patient ⭐️
+            if hasattr(user, 'is_patient') and user.is_patient:
+                login(request, user)
+                messages.success(request, 'Login successful!')
+                
+                # Check if it's an AJAX request
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True, 
+                        'message': 'Login successful!',
+                        'redirect_url': '/patient-dashboard/'
+                    })
+                return redirect('patient-dashboard')
+            else:
+                # User is not a patient
+                messages.error(request, 'This account is not a patient account.')
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False, 
+                        'error': 'This account is not a patient account.'
+                    })
+        else:
+            messages.error(request, 'Invalid username or password')
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False, 
+                    'error': 'Invalid username or password'
+                })
+    
+    return redirect('home')
+@csrf_exempt
+def patient_register(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+    try:
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if not all([first_name, last_name, username, email, password, confirm_password]):
+            return JsonResponse({'success': False, 'message': 'All fields are required.'})
+
+        if password != confirm_password:
+            return JsonResponse({'success': False, 'message': 'Passwords do not match.'})
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'success': False, 'message': 'Username already exists.'})
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({'success': False, 'message': 'Email already exists.'})
+
+        full_name = f"{first_name} {last_name}"
+
+        # Atomic: either both user and patient get created or none
+        with transaction.atomic():
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                is_patient=True
+            )
+
+            # create patient if not exists, otherwise update existing
+            try:
+                patient, created = Patient.objects.get_or_create(
+                    user=user,
+                    defaults={'name': full_name}
+                )
+                if not created:
+                    # In case a Patient already exists for this user, update fields
+                    patient.name = full_name
+                    patient.save()
+            except IntegrityError:
+                # race: another process created Patient for same user_id -> fetch and update
+                patient = Patient.objects.filter(user=user).first()
+                if patient:
+                    patient.name = full_name
+                    patient.save()
+                else:
+                    # unexpected: rollback by raising so transaction.atomic undoes user creation
+                    raise
+
+        return JsonResponse({'success': True, 'message': 'Registration successful! You can now login.'})
+
+    except IntegrityError as e:
+        # database constraint error
+        return JsonResponse({'success': False, 'message': f'Database error: {str(e)}'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'An error occurred: {str(e)}'})
+    
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        if email:
+            # Here you could generate a reset link or OTP
+            # For now, just simulate success message
+            messages.success(request, f"Password reset link sent to {email}")
+            return redirect('login')  # redirect to login page
+        else:
+            messages.error(request, "Please provide a valid email address")
+    return render(request, 'hospital/forgot_password.html')
 
 # Create your views here.
 @csrf_exempt
@@ -146,32 +276,71 @@ def pharmacy_shop(request):
 
 @csrf_exempt
 def login_user(request):
-    page = 'patient_login'
     if request.method == 'GET':
         return render(request, 'patient-login.html')
+
     elif request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Check if it's an AJAX request
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
         try:
             user = User.objects.get(username=username)
-        except:
-            messages.error(request, 'Username does not exist')
+        except User.DoesNotExist:
+            if is_ajax:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Username does not exist'
+                }, status=400)
+            else:
+                messages.error(request, 'Username does not exist')
+                return render(request, 'patient-login.html')
 
-        user = authenticate(username=username, password=password)
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-            if request.user.is_patient:   
-                messages.success(request, 'User Logged in Successfully')    
-                return redirect('patient-dashboard')
-            else:
-                messages.error(request, 'Invalid credentials. Not a Patient')
-                return redirect('logout')
-        else:
-            messages.error(request, 'Invalid username or password')
 
-    return render(request, 'patient-login.html')
+            # Check if user is a patient
+            if hasattr(user, "is_patient") and user.is_patient:
+                if is_ajax:
+                    return JsonResponse({
+                        'success': True,
+                        'message': 'Login successful!',
+                        'redirect_url': reverse('patient-dashboard')
+                    })
+                else:
+                    messages.success(request, 'User Logged in Successfully')
+                    return redirect('patient-dashboard')
+            else:
+                logout(request)
+                if is_ajax:
+                    return JsonResponse({
+                        'success': False,
+                        'message': 'Invalid credentials. Not a Patient'
+                    }, status=400)
+                else:
+                    messages.error(request, 'Invalid credentials. Not a Patient')
+                    return redirect('login')
+        else:
+            if is_ajax:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invalid username or password'
+                }, status=400)
+            else:
+                messages.error(request, 'Invalid username or password')
+
+    # For non-AJAX requests or failed login
+    if is_ajax:
+        return JsonResponse({
+            'success': False,
+            'message': 'Login failed'
+        }, status=400)
+    else:
+        return render(request, 'patient-login.html')
 
 @csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -180,47 +349,68 @@ def logoutUser(request):
     messages.success(request, 'User Logged out')
     return redirect('login')
 
-@csrf_exempt
-def patient_register(request):
-    page = 'patient-register'
-    form = CustomUserCreationForm()
+# @csrf_exempt
+# def patient_register(request):
+#     page = 'patient-register'
+#     form = CustomUserCreationForm()
 
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            # form.save()
-            user = form.save(commit=False) # commit=False --> don't save to database yet (we have a chance to modify object)
-            user.is_patient = True
-            # user.username = user.username.lower()  # lowercase username
-            user.save()
-            messages.success(request, 'Patient account was created!')
+#     if request.method == 'POST':
+#         form = CustomUserCreationForm(request.POST)
+#         if form.is_valid():
+#             # form.save()
+#             user = form.save(commit=False) # commit=False --> don't save to database yet (we have a chance to modify object)
+#             user.is_patient = True
+#             # user.username = user.username.lower()  # lowercase username
+#             user.save()
+#             messages.success(request, 'Patient account was created!')
 
-            # After user is created, we can log them in --> login(request, user)
-            return redirect('login')
+#             # After user is created, we can log them in --> login(request, user)
+#             return redirect('login')
 
-        else:
-            messages.error(request, 'An error has occurred during registration')
+#         else:
+#             messages.error(request, 'An error has occurred during registration')
 
-    context = {'page': page, 'form': form}
-    return render(request, 'patient-register.html', context)
+#     context = {'page': page, 'form': form}
+#     return render(request, 'patient-register.html', context)
 
 @csrf_exempt
 @login_required(login_url="login")
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def patient_dashboard(request):
-    if request.user.is_patient:
-        # patient = Patient.objects.get(user_id=pk)
+    if not request.user.is_patient:
+        messages.error(request, 'You are not authorized to access this page.')
+        return redirect('logout')
+    
+    try:
+        # This should now always work due to registration fix
         patient = Patient.objects.get(user=request.user)
         report = Report.objects.filter(patient=patient)
         prescription = Prescription.objects.filter(patient=patient).order_by('-prescription_id')
-        appointments = Appointment.objects.filter(patient=patient).filter(Q(appointment_status='pending') | Q(appointment_status='confirmed'))
-        payments = Payment.objects.filter(patient=patient).filter(appointment__in=appointments).filter(payment_type='appointment').filter(status='VALID')
-        context = {'patient': patient, 'appointments': appointments, 'payments': payments,'report':report,'prescription':prescription}
-    else:
-        return redirect('logout')
+        appointments = Appointment.objects.filter(patient=patient).filter(
+            Q(appointment_status='pending') | Q(appointment_status='confirmed')
+        )
+        payments = Payment.objects.filter(patient=patient).filter(
+            appointment__in=appointments
+        ).filter(payment_type='appointment').filter(status='VALID')
         
-    return render(request, 'patient-dashboard.html', context)
-
+        context = {
+            'patient': patient, 
+            'appointments': appointments, 
+            'payments': payments,
+            'report': report,
+            'prescription': prescription
+        }
+        return render(request, 'patient-dashboard.html', context)
+        
+    except Patient.DoesNotExist:
+        # Fallback - create patient record if missing (safety net)
+        patient = Patient.objects.create(
+            user=request.user,
+            name=f"{request.user.first_name} {request.user.last_name}",
+            featured_image="default.png"
+        )
+        messages.info(request, 'Your patient profile has been created.')
+        return redirect('patient-dashboard')
 
 # def profile_settings(request):
 #     if request.user.is_patient:
@@ -285,21 +475,42 @@ def profile_settings(request):
     else:
         redirect('logout')  
         
-@csrf_exempt
-@login_required(login_url="login")
-def search(request):
-    if request.user.is_authenticated and request.user.is_patient:
-        # patient = Patient.objects.get(user_id=pk)
-        patient = Patient.objects.get(user=request.user)
-        doctors = Doctor_Information.objects.filter(register_status='Accepted')
-        
-        doctors, search_query = searchDoctors(request)
-        context = {'patient': patient, 'doctors': doctors, 'search_query': search_query}
-        return render(request, 'search.html', context)
-    else:
-        logout(request)
-        messages.error(request, 'Not Authorized')
-        return render(request, 'patient-login.html')    
+def search_doctors(request):
+    query = request.GET.get('search_query', '').strip()
+    # Pull related FKs to avoid N+1 and ensure fields are present
+    doctors = (
+        Doctor_Information.objects
+        .select_related('department_name', 'specialization', 'hospital_name')
+        .filter(register_status='Accepted')
+    )
+
+    if query:
+        doctors = doctors.filter(
+            Q(name__icontains=query) |
+            Q(username__icontains=query) |
+            Q(department__icontains=query) |
+            Q(department_name__hospital_department_name__icontains=query) |
+            Q(department_name__name__icontains=query) |
+            Q(specialization__specialization_name__icontains=query) |
+            Q(hospital_name__name__icontains=query)
+        )
+
+    # Deduplicate: show only one card per doctor user (the earliest profile)
+    deduped = {}
+    for d in doctors.order_by('user_id', 'doctor_id'):
+        if d.user_id not in deduped:
+            deduped[d.user_id] = d
+    doctors = list(deduped.values())
+
+    # Add this to include patient info in sidebar
+    patient = Patient.objects.get(user=request.user)
+
+    context = {
+        'doctors': doctors,
+        'search_query': query,
+        'patient': patient,
+    }
+    return render(request, 'search.html', context)    
     
 
 def checkout_payment(request):
@@ -308,11 +519,8 @@ def checkout_payment(request):
 @csrf_exempt
 @login_required(login_url="login")
 def multiple_hospital(request):
-    
     if request.user.is_authenticated: 
-        
         if request.user.is_patient:
-            # patient = Patient.objects.get(user_id=pk)
             patient = Patient.objects.get(user=request.user)
             doctors = Doctor_Information.objects.all()
             hospitals = Hospital_Information.objects.all()
@@ -326,7 +534,8 @@ def multiple_hospital(request):
             return render(request, 'multiple-hospital.html', context)
         
         elif request.user.is_doctor:
-            doctor = Doctor_Information.objects.get(user=request.user)
+            # FIX: Use filter().first() instead of get() to handle multiple profiles
+            doctor = Doctor_Information.objects.filter(user=request.user).first()
             hospitals = Hospital_Information.objects.all()
             
             hospitals, search_query = searchHospitals(request)
@@ -336,14 +545,12 @@ def multiple_hospital(request):
     else:
         logout(request)
         messages.error(request, 'Not Authorized')
-        return render(request, 'patient-login.html') 
+        return render(request, 'patient-login.html')
     
 @csrf_exempt    
 @login_required(login_url="login")
 def hospital_profile(request, pk):
-    
     if request.user.is_authenticated: 
-        
         if request.user.is_patient:
             patient = Patient.objects.get(user=request.user)
             doctors = Doctor_Information.objects.all()
@@ -353,33 +560,33 @@ def hospital_profile(request, pk):
             specializations = specialization.objects.filter(hospital=hospitals)
             services = service.objects.filter(hospital=hospitals)
             
-            # department_list = None
-            # for d in departments:
-            #     vald = d.hospital_department_name
-            #     vald = re.sub("'", "", vald)
-            #     vald = vald.replace("[", "")
-            #     vald = vald.replace("]", "")
-            #     vald = vald.replace(",", "")
-            #     department_list = vald.split()
-            
             context = {'patient': patient, 'doctors': doctors, 'hospitals': hospitals, 'departments': departments, 'specializations': specializations, 'services': services}
             return render(request, 'hospital-profile.html', context)
         
         elif request.user.is_doctor:
-           
-            doctor = Doctor_Information.objects.get(user=request.user)
+            # FIX: Use filter().first() instead of get()
+            doctor = Doctor_Information.objects.filter(user=request.user).first()
             hospitals = Hospital_Information.objects.get(hospital_id=pk)
-            
             departments = hospital_department.objects.filter(hospital=hospitals)
             specializations = specialization.objects.filter(hospital=hospitals)
             services = service.objects.filter(hospital=hospitals)
             
-            context = {'doctor': doctor, 'hospitals': hospitals, 'departments': departments, 'specializations': specializations, 'services': services}
+            # FIX: Get doctor registrations for this hospital
+            doctor_list = Doctor_Information.objects.filter(user=request.user, hospital_name=hospitals)
+
+            context = {
+                'doctor': doctor,
+                'hospitals': hospitals,
+                'departments': departments,
+                'specializations': specializations,
+                'services': services,
+                'doctor_list': doctor_list,
+            }
             return render(request, 'hospital-profile.html', context)
     else:
         logout(request)
         messages.error(request, 'Not Authorized')
-        return render(request, 'patient-login.html') 
+        return render(request, 'patient-login.html')
     
     
 def data_table(request):
@@ -388,106 +595,128 @@ def data_table(request):
 @csrf_exempt
 @login_required(login_url="login")
 def hospital_department_list(request, pk):
-    if request.user.is_authenticated: 
-        
-        if request.user.is_patient:
-            # patient = Patient.objects.get(user_id=pk)
+    hospital = get_object_or_404(Hospital_Information, hospital_id=pk)
+    departments = hospital_department.objects.filter(hospital=hospital)
+    
+    # Add proper context for user type
+    context = {
+        'hospitals': hospital,
+        'departments': departments,
+    }
+    
+    # Add user-specific context
+    if request.user.is_patient:
+        try:
             patient = Patient.objects.get(user=request.user)
-            doctors = Doctor_Information.objects.all()
-            
-            hospitals = Hospital_Information.objects.get(hospital_id=pk)
-            departments = hospital_department.objects.filter(hospital=hospitals)
-        
-            context = {'patient': patient, 'doctors': doctors, 'hospitals': hospitals, 'departments': departments}
-            return render(request, 'hospital-department.html', context)
-        
-        elif request.user.is_doctor:
+            context['patient'] = patient
+        except Patient.DoesNotExist:
+            messages.error(request, 'Patient profile not found.')
+            return redirect('patient-dashboard')
+    elif request.user.is_doctor:
+        try:
             doctor = Doctor_Information.objects.get(user=request.user)
-            hospitals = Hospital_Information.objects.get(hospital_id=pk)
-            departments = hospital_department.objects.filter(hospital=hospitals)
-            
-            context = {'doctor': doctor, 'hospitals': hospitals, 'departments': departments}
-            return render(request, 'hospital-department.html', context)
-    else:
-        logout(request)
-        messages.info(request, 'Not Authorized')
-        return render(request, 'patient-login.html')
+            context['doctor'] = doctor
+        except Doctor_Information.DoesNotExist:
+            messages.error(request, 'Doctor profile not found.')
+            return redirect('doctor-dashboard')
+    
+    return render(request, 'hospital-department.html', context)
 
 @csrf_exempt
 @login_required(login_url="login")
 def hospital_doctor_list(request, pk):
     if request.user.is_authenticated and request.user.is_patient:
-        # patient = Patient.objects.get(user_id=pk)
         patient = Patient.objects.get(user=request.user)
         departments = hospital_department.objects.get(hospital_department_id=pk)
         doctors = Doctor_Information.objects.filter(department_name=departments)
-        
         doctors, search_query = searchDepartmentDoctors(request, pk)
-        
         context = {'patient': patient, 'department': departments, 'doctors': doctors, 'search_query': search_query, 'pk_id': pk}
         return render(request, 'hospital-doctor-list.html', context)
 
     elif request.user.is_authenticated and request.user.is_doctor:
-        # patient = Patient.objects.get(user_id=pk)
-        
-        doctor = Doctor_Information.objects.get(user=request.user)
         departments = hospital_department.objects.get(hospital_department_id=pk)
-        
+        # FIX: Use filter().first() for current doctor
+        doctor = Doctor_Information.objects.filter(user=request.user).first()
+        doctor_list = Doctor_Information.objects.filter(user=request.user, department_name=departments)
         doctors = Doctor_Information.objects.filter(department_name=departments)
         doctors, search_query = searchDepartmentDoctors(request, pk)
-        
-        context = {'doctor':doctor, 'department': departments, 'doctors': doctors, 'search_query': search_query, 'pk_id': pk}
+        context = {
+            'doctor': doctor,  # Add this
+            'doctor_list': doctor_list, 
+            'department': departments, 
+            'doctors': doctors, 
+            'search_query': search_query, 
+            'pk_id': pk
+        }
         return render(request, 'hospital-doctor-list.html', context)
     else:
         logout(request)
         messages.error(request, 'Not Authorized')
-        return render(request, 'patient-login.html')   
+        return render(request, 'patient-login.html')
     
-
-
 @csrf_exempt
 @login_required(login_url="login")
 def hospital_doctor_register(request, pk):
-    if request.user.is_authenticated: 
+    hospital = get_object_or_404(Hospital_Information, hospital_id=pk)
+    departments = hospital_department.objects.filter(hospital=hospital)
+    specializations = specialization.objects.filter(hospital=hospital)
+
+    # SAFE APPROACH: Use filter().first() instead of get()
+    current_doctor = Doctor_Information.objects.filter(user=request.user).first()
+    doctor_list = Doctor_Information.objects.filter(user=request.user, hospital_name=hospital)
+    already_registered = doctor_list.exists()
+
+    if request.method == "POST":
+        department_id = request.POST.get("department_radio")
+        specialization_id = request.POST.get("specialization_radio")
+        certificate = request.FILES.get("certificate_image")
+
+        if not all([department_id, specialization_id, certificate]):
+            messages.error(request, "All fields are required.")
+            return redirect('hospital-doctor-register', pk=hospital.hospital_id)
+
+        try:
+            department = hospital_department.objects.get(pk=department_id)
+            specialization_obj = specialization.objects.get(pk=specialization_id)
+        except (hospital_department.DoesNotExist, specialization.DoesNotExist):
+            messages.error(request, "Invalid selection.")
+            return redirect('hospital-doctor-register', pk=hospital.hospital_id)
+
+        existing_registration = doctor_list.first()
         
-        if request.user.is_doctor:
-            doctor = Doctor_Information.objects.get(user=request.user)
-            hospitals = Hospital_Information.objects.get(hospital_id=pk)
-            
-            departments = hospital_department.objects.filter(hospital=hospitals)
-            specializations = specialization.objects.filter(hospital=hospitals)
-            
-            if request.method == 'POST':
-                if 'certificate_image' in request.FILES:
-                    certificate_image = request.FILES['certificate_image']
-                else:
-                    certificate_image = "doctors_certificate/default.png"
-                
-                department_id_selected = request.POST.get('department_radio')
-                specialization_id_selected = request.POST.get('specialization_radio')
-                
-                department_chosen = hospital_department.objects.get(hospital_department_id=department_id_selected)
-                specialization_chosen = specialization.objects.get(specialization_id=specialization_id_selected)
-                
-                doctor.department_name = department_chosen
-                doctor.specialization = specialization_chosen
-                doctor.register_status = 'Pending'
-                doctor.certificate_image = certificate_image
-                
-                doctor.save()
-                
-                messages.success(request, 'Hospital Registration Request Sent')
-                
-                return redirect('doctor-dashboard')
-                
-                 
-            context = {'doctor': doctor, 'hospitals': hospitals, 'departments': departments, 'specializations': specializations}
-            return render(request, 'hospital-doctor-register.html', context)
-    else:
-        logout(request)
-        messages.info(request, 'Not Authorized')
-        return render(request, 'doctor-login.html')
-    
+        if existing_registration:
+            if existing_registration.register_status == 'Rejected':
+                existing_registration.register_status = 'Pending'
+                existing_registration.department_name = department
+                existing_registration.specialization = specialization_obj
+                existing_registration.certificate_image = certificate
+                existing_registration.save()
+                messages.success(request, "Application resubmitted successfully!")
+            else:
+                messages.info(request, f"You already have a {existing_registration.register_status.lower()} application.")
+        else:
+            Doctor_Information.objects.create(
+                user=request.user,
+                hospital_name=hospital,
+                department_name=department,
+                specialization=specialization_obj,
+                certificate_image=certificate,
+                register_status='Pending',
+                name=current_doctor.name if current_doctor else f"{request.user.first_name} {request.user.last_name}"
+            )
+            messages.success(request, "Application submitted successfully!")
+
+        return redirect('hospital-doctor-register', pk=hospital.hospital_id)
+
+    context = {
+        'hospitals': hospital,
+        'departments': departments,
+        'specializations': specializations,
+        'already_registered': already_registered,
+        'doctor': current_doctor,
+        'doctor_list': doctor_list,
+    }
+    return render(request, 'hospital-doctor-register.html', context)
    
 def testing(request):
     # hospitals = Hospital_Information.objects.get(hospital_id=1)
@@ -564,7 +793,7 @@ def test_add_to_cart(request, pk, pk2):
 @csrf_exempt
 @login_required(login_url="login")
 def test_cart(request, pk):
-    if request.user.is_authenticated and request.user.is_patient:
+    if request.user.is_authenticated and request.user is patient:
         # prescription = Prescription.objects.filter(prescription_id=pk)
         
         prescription = Prescription.objects.filter(prescription_id=pk)
@@ -718,6 +947,14 @@ def got_online(sender, user, request, **kwargs):
 def got_offline(sender, user, request, **kwargs):   
     user.login_status = False
     user.save()
-    
+
+from doctor.models import Doctor_Information
+from django.shortcuts import redirect, get_object_or_404
+
+def delete_doctor(request, doctor_id):
+    doctor = get_object_or_404(Doctor_Information, pk=doctor_id)
+    doctor.delete()
+    return redirect('register-doctor-list')
+
 
 

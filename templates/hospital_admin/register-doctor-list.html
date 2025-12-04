@@ -79,22 +79,50 @@
 													<th>Department</th>
 													<th>Hospital</th>
 													<th>View profile</th>
-
+													<th>Actions</th>
 													</tr>
 													<tbody>
 														{% for doctor in doctors %}
 														<tr>
 															<td>
 																<h2 class="table-avatar">
-																	<a href="{%url 'admin-doctor-profile' doctor.doctor_id%}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{doctor.featured_image.url}}" alt="User Image"></a>
-																	<a href="{%url 'admin-doctor-profile' doctor.doctor_id%}">{{doctor.name}}</a>
+																	<a href="{%url 'admin-doctor-profile' doctor.doctor_id%}" class="avatar avatar-sm mr-2">
+																		{% if doctor.featured_image and doctor.featured_image.name and doctor.featured_image.name != 'doctors/user-default.png' %}
+																			<img class="avatar-img rounded-circle" src="{{ doctor.featured_image.url }}" alt="Doctor Image" />
+																		{% else %}
+																			<img class="avatar-img rounded-circle" src="{% static 'HealthStack-System/images/Normal/doctors/user-default.png' %}" alt="Doctor Image" />
+																		{% endif %}
+																	</a>
+																	<a href="{%url 'admin-doctor-profile' doctor.doctor_id%}">{{ doctor.name }}</a>
 																</h2>
 															</td>
-															<td>{{doctor.email}}</td>
+															<td>
+																{% if doctor.email %}
+																	{{ doctor.email }}
+																{% elif doctor.user and doctor.user.email %}
+																	{{ doctor.user.email }}
+																{% else %}
+																	-
+																{% endif %}
+															</td>
 
-															<td>{{doctor.department}}</td>
+															<td>
+																{% if doctor.department_name %}
+																	{{ doctor.department_name.hospital_department_name }}
+																{% elif doctor.department %}
+																	{{ doctor.department }}
+																{% else %}
+																	None
+																{% endif %}
+															</td>
 
-															<td>{{doctor.hospital}}</td>
+															<td>
+																{% if doctor.hospital_name %}
+																	{{ doctor.hospital_name.name }}
+																{% else %}
+																	None
+																{% endif %}
+															</td>
 															<td>
 																<div class="table-action">
 																	<a
@@ -105,6 +133,14 @@
 																	</a>
 										
 																  </div>
+															</td>
+															<td>
+																<div class="table-action">
+																	<form action="{% url 'delete_doctor' doctor.doctor_id %}" method="post" style="display:inline;">
+																		{% csrf_token %}
+																		<button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this doctor?');">Delete</button>
+																	</form>
+																</div>
 															</td>
 
 

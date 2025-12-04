@@ -1,107 +1,163 @@
 {% load static %}
+<style>
+  /* Navbar */
+  .navbar.header-nav {
+    background: linear-gradient(90deg, #004e92, #000428);
+    padding: 8px 30px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* spread items left-center-right */
+    flex-wrap: wrap;
+    margin-bottom: 0;  /* no gap after navbar */
+    border-bottom: none;
+  }
 
-<nav class="navbar navbar-expand-lg header-nav">
-  <div class="navbar-header">
-    <a id="mobile_btn" href="javascript:void(0);">
-      <span class="bar-icon">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-    </a>
-    <a href="{% url 'hospital_home'%}" class="navbar-brand logo">
-      <img
-        src="{% static 'HealthStack-System/images/Normal/logo.jpg' %}"
-        class="img-fluid"
-        alt="Logo"
-      />
-    </a>
-  </div>
-  <div class="main-menu-wrapper">
-    <div class="menu-header">
-      <a href="{% url 'hospital_home'%}" class="menu-logo">
-        <img
-          src="{% static 'HealthStack-System/images/Normal/logo.jpg' %}"
-          class="img-fluid"
-          alt="Logo"
-        />
-      </a>
-      <a id="menu_close" class="menu-close" href="javascript:void(0);">
-        <i class="fas fa-times"></i>
-      </a>
-    </div>
-    <ul class="main-nav">
-      <li>
-        <a href="{% url 'hospital_home'%}">Home</a>
-      </li>
+  /* Brand (Logo + Text) */
+  .navbar .navbar-brand {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #00d4ff !important;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    margin-right: 30px;
+  }
+  .navbar .navbar-brand i {
+    color: #00d4ff;
+    font-size: 1.5rem;
+  }
 
-      <li>
-        <a href="{% url 'doctor-dashboard'%}">Dashboard</a>
-      </li>
+  /* Main Menu */
+  .main-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .main-nav > li > a {
+    color: #fff !important;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    transition: 0.3s;
+  }
+  .main-nav > li > a:hover {
+    color: #00d4ff !important;
+    transform: translateY(-2px);
+  }
+  .main-nav > li.active > a {
+    color: #33cfff !important;
+    font-weight: 600;
+  }
 
-      <li><a href="{% url 'multiple-hospital' %}" style="text-decoration: none;">Hospitals</a></li>
+  /* Submenu */
+  .main-nav .has-submenu {
+    position: relative;
+  }
+  .main-nav .submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #002a5c;
+    border-radius: 6px;
+    min-width: 200px;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    padding: 8px 0;
+  }
+  .main-nav .submenu li a {
+    color: #fff !important;
+    padding: 8px 18px;
+    display: block;
+  }
+  .main-nav .submenu li a:hover {
+    background: rgba(0, 212, 255, 0.1);
+    color: #00d4ff !important;
+  }
+  .main-nav .has-submenu:hover .submenu {
+    display: block;
+  }
 
+  /* Right Section */
+  .header-navbar-rht {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .breadcrumb-title {
+    color: #33cfff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.4; /
+  }
+  .dropdown-menu {
+    background: #002a5c;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    border-radius: 8px;
+  }
+  .dropdown-menu a {
+    color: #fff !important;
+    font-size: 0.95rem;
+    padding: 10px 20px;
+  }
+  .dropdown-menu a:hover {
+    background: rgba(0, 212, 255, 0.1);
+    color: #00d4ff !important;
+  }
+</style>
 
-      <li>
-        <a href="{% url 'about-us'%}">About Us</a>
-      </li>
-      
-      <li>
-        <a href="{% url 'chat-home' pk=user.id %}">Chat with Patients</a>
-      </li>
-    
-      <li class="login-link">
-        <a href="{% url 'login' %}">Login / Signup</a>
-      </li>
-    </ul>
-  </div>
-  <ul class="nav header-navbar-rht">
-    <li class="nav-item contact-item">
-      <div class="header-contact-img">
-        <i class="far fa-hospital"></i>
-      </div>
-      <div class="header-contact-detail">
-        <p class="contact-header">Contact</p>
-        <p class="contact-info-header">+88{{doctor.phone_number}}</p>
-      </div>
+<nav class="navbar header-nav">
+  <!-- Left: Logo -->
+  <a class="navbar-brand" href="{% url 'hospital_home'%}">
+    <i class="fas fa-stethoscope"></i> HealthStack
+  </a>
+
+  <!-- Center: Navigation Menu -->
+  <ul class="main-nav">
+    <li><a href="{% url 'doctor-dashboard'%}">Dashboard</a></li>
+    <li><a href="{% url 'multiple-hospital' %}">Hospitals</a></li>
+    <li><a href="{% url 'chat-home' pk=user.id %}">Chat with Patients</a></li>
+    <li class="login-link"><a href="{% url 'login' %}">Login / Signup</a></li>
+  </ul>
+
+  <!-- Right: Profile / User -->
+  <ul class="header-navbar-rht">
+    <li>
+      <h2 class="breadcrumb-title">Doctor Dashboard</h2>
+      {% include 'message.html' %}
     </li>
-    <!-- User Menu -->
     <li class="nav-item dropdown has-arrow logged-item">
       <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
         <span class="user-img">
-          <img
-            class="rounded-circle"
-            src="{{ doctor.featured_image.url }}"
-            width="31"
-            alt="Darren Elder"
-          />
+          <img class="rounded-circle"
+               src="{{ doctor.featured_image.url }}"
+               width="31" alt="{{ doctor.name }}" />
         </span>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
         <div class="user-header">
           <div class="avatar avatar-sm">
-            <img
-              src="{{ doctor.featured_image.url }}"
-              alt="User Image"
-              class="avatar-img rounded-circle"
-            />
+            <img src="{{ doctor.featured_image.url }}"
+                 alt="User Image"
+                 class="avatar-img rounded-circle"/>
           </div>
           <div class="user-text">
-            <h6>{{doctor.name}}</h6>
+            <h6 style="color: #fff;">{{doctor.name}}</h6>
             <p class="text-muted mb-0">Doctor</p>
           </div>
         </div>
-        <a class="dropdown-item" href="{% url 'doctor-dashboard' %}"
-          >Dashboard</a
-        >
-        <a
-          class="dropdown-item"
-          href="{% url 'doctor-profile-settings' %}"
-          >Profile Settings</a
-        >
-        <a class="dropdown-item" href="{% url 'doctor-logout' %}">Logout</a>
+        <a class="dropdown-item" href="{% url 'doctor-dashboard' %}">Dashboard</a>
+        <a class="dropdown-item" href="{% url 'doctor-profile-settings' doctor.pk %}">Profile Settings</a>
+        <a class="dropdown-item" href="{% url 'hospital_home' %}">Logout</a>
       </div>
     </li>
-    <!-- /User Menu -->
   </ul>
 </nav>

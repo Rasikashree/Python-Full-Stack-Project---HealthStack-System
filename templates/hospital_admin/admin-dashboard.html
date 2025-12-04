@@ -93,7 +93,7 @@
 					</div>
 					<!-- /Page Header -->
 
-          <div class="row">
+          <div class="row" style="align-items: center;">
             <div class="col-xl-3 col-sm-6 col-12">
               <div class="card">
                 <div class="card-body">
@@ -154,7 +154,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-xl-3 col-sm-6 col-12">
+            <!-- <div class="col-xl-3 col-sm-6 col-12">
               <div class="card">
                 <div class="card-body">
                   <div class="dash-widget-header">
@@ -173,7 +173,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
             
           </div>
           
@@ -274,9 +274,27 @@
                               <a href="{%url 'admin-doctor-profile' pk=doctor.doctor_id%}">{{doctor.name}}</a>
                             </h2>
                           </td>
-                          <td>{{doctor.department}}</td>
-                          <td>{{doctor.speciality}}</td>
-                          <td>{{doctor.hospital}}</td>
+                          <td>
+                            {% if doctor.department_name %}
+                              {{ doctor.department_name.hospital_department_name }}
+                            {% else %}
+                              {{ doctor.department }}
+                            {% endif %}
+                          </td>
+                          <td>
+                            {% if doctor.specialization %}
+                              {{ doctor.specialization.specialization_name }}
+                            {% else %}
+                              None
+                            {% endif %}
+                          </td>
+                          <td>
+                            {% if doctor.hospital_name %}
+                              {{ doctor.hospital_name.name }}
+                            {% else %}
+                              None
+                            {% endif %}
+                          </td>
 
                         </tr>
                         {% endfor %}
@@ -332,10 +350,9 @@
 						</div>
             
           </div>
-
+<!-- 
           <div class="row">
             <div class="col-md-6 d-flex">
-              <!-- Recent Orders -->
               <div class="card card-table flex-fill">
                 <div class="card-header">
                   <h4 class="card-title">Pharmacist List</h4>
@@ -378,14 +395,13 @@
                   </div>
                 </div>
               </div>
-              <!-- /Recent Orders -->
-            </div>
+            </div> -->
             
 
-            <div class="col-md-6 d-flex">
+            <!-- <div class="col-md-6 d-flex"> -->
 						
 							<!-- Feed Activity -->
-							<div class="card  card-table flex-fill">
+							<!-- <div class="card  card-table flex-fill">
 								<div class="card-header">
 									<h4 class="card-title">Lab-Worker List</h4>
 								</div>
@@ -420,7 +436,7 @@
 										</table>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<!-- /Feed Activity -->
 							
 						</div>

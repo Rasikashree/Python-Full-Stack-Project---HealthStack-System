@@ -1,22 +1,231 @@
 {% load static %}
+  <style>
+    /* Navbar container */
+    .navbar.header-nav {
+      background: linear-gradient(90deg, #004e92, #000428);
+      padding: 0 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      border-bottom: none; 
+    }
+    /* Sections align same height */
+    .navbar-header,
+    .main-menu-wrapper,
+    .header-navbar-rht {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    /* Left: Logo */
+    .navbar .navbar-brand {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #00d4ff !important;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      height: 100%;
+    }
+    .navbar .navbar-brand i {
+      font-size: 1.5rem;
+      color: #00d4ff;
+    }
+
+    /* Middle: Menu (close to left) */
+    .main-menu-wrapper {
+      display: flex;
+      justify-content: flex-start; /* stick near logo */
+      margin-left: 30px;           /* small gap after logo */
+    }
+    .main-nav {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: 20px;
+      height: 100%;
+    }
+    .main-nav > li {
+      display: flex;
+      align-items: center;
+    }
+    .main-nav > li > a {
+      color: #fff !important;
+      padding: 0 12px;
+      font-weight: 500;
+      font-size: 1rem;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      transition: 0.3s;
+    }
+    .main-nav > li > a:hover {
+      color: #00d4ff !important;
+    }
+
+    /* Dropdowns */
+    .main-nav .has-submenu {
+      position: relative;
+    }
+    .main-nav .submenu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #002a5c;
+      border-radius: 6px;
+      min-width: 200px;
+      padding: 8px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+    .main-nav .has-submenu:hover .submenu {
+      display: block;
+    }
+    .main-nav .submenu li a {
+      color: #fff !important;
+      padding: 8px 16px;
+      display: block;
+    }
+    .main-nav .submenu li a:hover {
+      background: rgba(0,212,255,0.1);
+      color: #00d4ff !important;
+    }
+
+    /* Right: Dashboard + user dropdown */
+    .header-navbar-rht {
+      gap: 20px;
+    }
+    .header-navbar-rht .breadcrumb-title {
+      color: #33cfff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+    .header-navbar-rht .user-img img {
+      width: 35px;
+      height: 35px;
+      object-fit: cover;
+    }
+
+    /* Dropdown visual updates */
+    .header-navbar-rht .dropdown-menu {
+      background: linear-gradient(180deg, #002a5c 0%, #001833 100%);
+      border-radius: 8px;
+      border: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+      padding: 8px 0;
+      min-width: 200px;
+    }
+
+    .header-navbar-rht .dropdown-menu .user-header {
+      background: linear-gradient(90deg, rgba(0,78,146,0.9), rgba(0,36,80,0.9));
+      padding: 12px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .header-navbar-rht .dropdown-menu .user-header .avatar-img {
+      border: 2px solid rgba(255,255,255,0.08);
+    }
+
+    .header-navbar-rht .dropdown-menu a.dropdown-item {
+      color: #dbeeff !important;
+      padding: 10px 18px;
+      display: block;
+      transition: background .18s ease, color .18s ease, transform .12s ease;
+    }
+
+    /* standard item hover */
+    .header-navbar-rht .dropdown-menu a.dropdown-item:hover {
+      background: rgba(3,169,244,0.06);
+      color: #00d4ff !important;
+      transform: translateY(-1px);
+    }
+
+    /* explicit logout button styling */
+    .header-navbar-rht .dropdown-menu a.dropdown-item.logout-btn {
+      color: #ffdede !important;
+      font-weight: 600;
+      background: transparent;
+    }
+    .header-navbar-rht .dropdown-menu a.dropdown-item.logout-btn:hover {
+      background: linear-gradient(90deg,#ff4b4b,#e53935);
+      color: #fff !important;
+      box-shadow: 0 6px 18px rgba(229,59,59,0.25);
+      transform: translateY(-2px);
+    }
+
+    /* small pointer triangle (optional) */
+    .header-navbar-rht .dropdown-menu::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      right: 14px;
+      width: 12px;
+      height: 12px;
+      transform: rotate(45deg);
+      background: linear-gradient(180deg, #002a5c 0%, #001833 100%);
+      box-shadow: rgba(0,0,0,0.12) -2px -2px 6px;
+      border-radius: 2px;
+    }
+
+    .header-navbar-rht .user-text h6 {
+      color: #fff !important;
+    }
+
+    /* Responsive tweaks preserved */
+    @media(max-width: 991px){
+      .navbar.header-nav {
+        flex-wrap: wrap;
+        height: auto;
+      }
+      .main-menu-wrapper {
+        width: 100%;
+        margin: 10px 0 0;
+      }
+      .main-nav {
+        flex-direction: column;
+        gap: 0;
+      }
+      .main-nav li a {
+        width: 100%;
+        height: auto;
+        padding: 10px 15px;
+      }
+      .main-nav .submenu {
+        position: relative;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+      }
+      .header-navbar-rht {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: flex-end;
+      }
+      /* remove triangle on small screens */
+      .header-navbar-rht .dropdown-menu::before { display: none; }
+    }
+  </style>
+
 
 <nav class="navbar navbar-expand-lg header-nav">
   <div class="navbar-header">
-    <a id="mobile_btn" href="javascript:void(0);">
-      <span class="bar-icon">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
+    <a class="navbar-brand" href="{% url 'hospital_home'%}">
+      <i class="fas fa-stethoscope"></i> HealthStack
     </a>
-    <a href="{% url 'hospital_home'%}" class="navbar-brand logo">
-      <img
-        src="{% static 'HealthStack-System/images/Normal/logo.jpg' %}"
-        class="img-fluid"
-        alt="Logo"
-      />
-    </a>
-  </div>
+  </div>  
   <div class="main-menu-wrapper">
     <div class="menu-header">
       <a href="" class="menu-logo">
@@ -31,12 +240,12 @@
       </a>
     </div>
     <ul class="main-nav">
-      <li>
+      <!-- <li>
         <a href="{% url 'hospital_home'%}">Home</a>
-      </li>
+      </li> -->
 
       <li>
-        <a href="{% url 'patient-dashboard' %}">Dashboard</a>
+        <a href="{% url 'patient-dashboard' %}">Dashboard</a> {% include 'message.html' %}
       </li>
 
       <li class="has-submenu">
@@ -61,9 +270,9 @@
       </li>
       {% endif %}
 
-      <li>
+      <!-- <li>
         <a href="{% url 'pharmacy_shop' %}">Medical Shop</a>
-      </li>
+      </li> -->
       <!-- <li class="has-submenu">
                   <a href="#">Pages <i class="fas fa-chevron-down"></i></a>
                   <ul class="submenu">
@@ -89,13 +298,14 @@
   </div>
   <ul class="nav header-navbar-rht">
     <li class="nav-item contact-item">
-      <div class="header-contact-img">
+      <!-- <div class="header-contact-img">
         <i class="far fa-hospital"></i>
       </div>
       <div class="header-contact-detail">
         <p class="contact-header">Contact</p>
         <p class="contact-info-header">+880{{patient.phone_number}}</p>
-      </div>
+      </div> -->
+      <h2 class="breadcrumb-title">Patient Dashboard</h2>
     </li>
     <!-- User Menu -->
     <li class="nav-item dropdown has-arrow logged-item">
@@ -105,7 +315,7 @@
             class="rounded-circle"
             src="{{patient.featured_image.url}}"
             width="31"
-            alt="Richard Wilson"
+            alt=""
           />
         </span>
       </a>
@@ -119,17 +329,13 @@
             />
           </div>
           <div class="user-text">
-            <h6>{{patient.name}}</h6>
-            <p class="text-muted mb-0">Patient</p>
+            <h6 >{{patient.name}}</h6>
+            <p class="text-muted mb-0">Patient</p> 
           </div>
         </div>
-        <a class="dropdown-item" href="{% url 'patient-dashboard' %}"
-          >Dashboard</a
-        >
-        <a class="dropdown-item" href="{% url 'profile-settings' %}"
-          >Profile Settings</a
-        >
-        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+        <a class="dropdown-item" href="{% url 'patient-dashboard' %}">Dashboard</a>
+        <a class="dropdown-item" href="{% url 'profile-settings' %}">Profile Settings</a>
+        <a class="dropdown-item logout-btn" href="{% url 'hospital_home'%}">Logout</a>
       </div>
     </li>
     <!-- /User Menu -->

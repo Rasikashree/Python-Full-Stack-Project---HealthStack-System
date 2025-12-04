@@ -1,93 +1,217 @@
 {% load static %}
-		
-    <!-- Logo -->
-    <div class="header-left">
-        <a href="{% url 'admin-dashboard' %}" class="logo">
-            <img src="{% static 'HealthStack-System/images/Normal/logo.jpg' %}" alt="Logo">
-        </a>
-        <a href="{% url 'admin-dashboard' %}" class="logo logo-small">
-            <img src="{% static 'HealthStack-System/images/Normal/favicon.png' %}" alt="Logo" width="30" height="30">
-        </a>
-    </div>
-    <!-- /Logo -->
-    
-    <a href="javascript:void(0);" id="toggle_btn">
-        <i class="fe fe-text-align-left"></i>
-    </a>
-    
-    <!-- <div class="top-nav-search">
-        <form>
-            <input type="text" class="form-control" placeholder="Search here">
-            <button class="btn" type="submit"><i class="fa fa-search"></i></button>
-        </form>
-    </div> -->
-    
-    <!-- Mobile Menu Toggle -->
-    <a class="mobile_btn" id="mobile_btn">
-        <i class="fe fe-text-align-left"></i>
-    </a>
-    <!-- /Mobile Menu Toggle -->
-    
-    <!-- Header Right Menu -->
-    <ul class="nav user-menu">
 
-        {% comment %} <!-- Notifications -->
-        <li class="nav-item dropdown noti-dropdown">
-            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                <i class="fe fe-bell"></i> <span class="badge badge-pill">3</span>
-            </a>
-            <div class="dropdown-menu notifications">
-                <div class="topnav-dropdown-header">
-                    <span class="notification-title">Notifications</span>
-                    <a href="javascript:void(0)" class="clear-noti"> Clear All </a>
-                </div>
-                <div class="noti-content">
-                    <ul class="notification-list">
-                        <li class="notification-message">
-                            <a href="#">
-                                <div class="media">
-                                    <span class="avatar avatar-sm">
-                                        <img class="avatar-img rounded-circle" alt="User Image" src="assets/img/doctors/doctor-thumb-01.jpg">
-                                    </span>
-                                    <div class="media-body">
-                                        <p class="noti-details"><span class="noti-title">Dr. Ruby Perrin</span> Schedule <span class="noti-title">her appointment</span></p>
-                                        <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                       
-                    </ul>
-                </div>
-                <div class="topnav-dropdown-footer">
-                    <a href="#">View all Notifications</a>
-                </div>
-            </div> 
-        </li>
-        <!-- /Notifications --> {% endcomment %}
-        
-        <!-- User Menu -->
-        <li class="nav-item dropdown has-arrow">
-            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                <span class="user-img"><img class="rounded-circle" src="{{admin.featured_image.url}}" width="31" alt="{{admin.name}}"></span>
-            </a>
-            <div class="dropdown-menu">
-                <div class="user-header">
-                    <div class="avatar avatar-sm">
-                        <img src="{{admin.featured_image.url}}" alt="User Image" class="avatar-img rounded-circle">
-                    </div>
-                    <div class="user-text">
-                        <h6>{{admin.name}}</h6>
-                        <p class="text-muted mb-0">Administrator</p>
-                    </div>
-                </div>
-                <a class="dropdown-item" href="{%url 'hospital-admin-profile' pk=user.id %}">My Profile</a>
-                {% comment %} <a class="dropdown-item" href="settings.html">Settings</a> {% endcomment %}
-                <a class="dropdown-item" href="{% url 'admin-logout' %}">Logout</a>
-            </div>
-        </li>
-        <!-- /User Menu -->
-        
-    </ul>
-    <!-- /Header Right Menu -->
-    
+<!-- ✅ Font Awesome -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+
+<!-- ✅ Navbar CSS -->
+<style>
+  /* Page layout */
+  .main-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .top-navbar {
+    background: linear-gradient(90deg, #004e92, #000428);
+    padding: 5px 30px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    position: relative;
+    width: 100%;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #00d4ff !important;
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+
+  .brand-logo i {
+    font-size: 1.5rem;
+    margin-right: 8px;
+    color: #00d4ff;
+  }
+
+  .logo.logo-small {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .brand-logo {
+      display: none;
+    }
+
+    .logo.logo-small {
+      display: flex;
+    }
+  }
+
+  /* Toggle Icons */
+  #toggle_btn,
+  #mobile_btn {
+    font-size: 20px;
+    color: #00d4ff;
+    margin-left: 15px;
+  }
+
+  /* User Menu */
+  .user-menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+  }
+
+  .user-menu .nav-item {
+    position: relative;
+    margin-left: 20px;
+  }
+
+  .user-menu .user-img img {
+    border-radius: 50%;
+    width: 31px;
+    height: 31px;
+  }
+
+  /* Dropdown toggle styling */
+  .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  /* Dropdown menu */
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    background-color: #ffffff;
+    min-width: 180px;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    padding: 10px 0;
+  }
+
+  .dropdown-menu.show {
+    display: block;
+  }
+
+  .dropdown-menu a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  .dropdown-menu a:hover {
+    background-color: #f0f0f0;
+  }
+
+  .user-header {
+    padding: 10px 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 5px;
+  }
+
+  .user-header .avatar-sm img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  .user-text h6 {
+    margin: 5px 0 0;
+    font-weight: 600;
+  }
+
+  .user-text p {
+    margin: 0;
+    font-size: 12px;
+    color: #888;
+  }
+</style>
+
+<!-- ✅ Top Navbar -->
+<div class="top-navbar">
+  <div class="header-left">
+    <a href="{% url 'admin-dashboard' %}" class="brand-logo">
+      <i class="fas fa-stethoscope"></i> HealthStack
+    </a>
+
+    <a href="{% url 'admin-dashboard' %}" class="logo logo-small">
+      <img
+        src="{% static 'HealthStack-System/images/Normal/favicon.png' %}"
+        alt="Logo"
+        width="30"
+        height="30"
+      />
+    </a>
+
+    <!-- Sidebar toggle buttons -->
+    <!-- <a href="javascript:void(0);" id="toggle_btn">
+      <i class="fe fe-text-align-left"></i>
+    </a> -->
+    <a class="mobile_btn" id="mobile_btn">
+      <i class="fe fe-text-align-left"></i>
+    </a>
+  </div>
+
+  <!-- ✅ Header Right Menu -->
+  <ul class="nav user-menu">
+    <li class="nav-item dropdown has-arrow">
+      <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+        <span class="user-img">
+          <img
+            class="rounded-circle"
+            src="{% static 'images/1.jpg' %}"
+            width="31"
+            alt="{{ admin.name }}"
+          />
+        </span>
+      </a>
+      <div class="dropdown-menu">
+        <div class="user-header">
+          <div class="avatar avatar-sm">
+            <img
+              src="{% static 'images/1.jpg' %}"
+              alt="User Image"
+              class="avatar-img rounded-circle"
+            />
+          </div>
+          <div class="user-text">
+            <h6>Rasi</h6>
+            <p class="text-muted mb-0">Administrator</p>
+          </div>
+        </div>
+        <a
+          class="dropdown-item"
+          href="{% url 'hospital-admin-profile' pk=user.id %}"
+          >My Profile</a
+        >
+        <a class="dropdown-item" href="{% url 'admin-logout' %}">Logout</a>
+      </div>
+    </li>
+  </ul>
+</div>

@@ -46,6 +46,10 @@
     <![endif]-->
   </head>
   <body>
+  <style>
+    /* Prevent scroll jitter from sticky sidebar on this page */
+    .theiaStickySidebar { position: static !important; }
+  </style>
   {% if user.is_authenticated %}
     <!-- Main Wrapper -->
     <div class="main-wrapper">
@@ -54,7 +58,7 @@
       <!-- /Header -->
 
       <!-- Breadcrumb -->
-      <div class="breadcrumb-bar">
+      <!-- <div class="breadcrumb-bar">
         <div class="container-fluid">
           <div class="row align-items-center">
             <div class="col-md-12 col-12">
@@ -75,7 +79,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- /Breadcrumb -->
 
       <!-- Page Content -->
@@ -126,7 +130,7 @@
                             </div>
                             <div class="dash-widget-info">
                               <h6>Today Patient</h6>
-                              <h3>{{today_patient_count.count}}</h3>
+                              <h3>{{today_patient_count}}</h3>
                               <p class="text-muted">{{current_date}}</p>
                             </div>
                           </div>
@@ -145,7 +149,7 @@
                             </div>
                             <div class="dash-widget-info">
                               <h6>Total Appoinments</h6>
-                              <h3>{{total_appointments_count.count}}</h3>
+                              <h3>{{total_appointments_count}}</h3>
                               <p class="text-muted">{{current_date}}</p>
                             </div>
                           </div>
@@ -196,7 +200,7 @@
                                 <thead>
                                   <tr>
                                     <th>Patient Name</th>
-                                    <th>Appt Date</th>
+                                    <th>Appointment Date</th>
                                     <th>Purpose</th>
                                     <th>Contact</th>
                                     <th>Payment Status</th>
@@ -281,7 +285,7 @@
                       <!-- /Upcoming Appointment Tab --> {% endcomment %}
 
                       <!-- Today Appointment Tab -->
-                      <div class="tab-pane" id="today-appointments">
+                      <div class="tab-pane show active" id="today-appointments">
                         <div class="card card-table mb-0">
                           <div class="card-body">
                             <div class="table-responsive">
@@ -291,7 +295,7 @@
                                 <thead>
                                   <tr>
                                     <th>Patient Name</th>
-                                    <th>Appt Date</th>
+                                    <th>Appointment Date</th>
                                     <th>Purpose</th>
                                     <th>Contact</th>
                                     <th>Status</th>
@@ -319,7 +323,7 @@
                                     <td>
                                       {{today.patient.email}}
                                       <span class="d-block text-info"
-                                        >+880{{today.patient.phone_number}}</span
+                                        >+91 {{today.patient.phone_number}}</span
                                       >
                                     </td>
                                     <td>
@@ -345,14 +349,12 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
+              
       <!-- /Page Content -->
 
       <!-- Footer -->
-      {% include 'footer.html' %}
+      
       <!-- /Footer -->
     </div>
     <!-- /Main Wrapper -->

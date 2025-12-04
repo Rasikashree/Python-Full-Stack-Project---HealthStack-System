@@ -27,6 +27,269 @@
         <script src="assets/js/html5shiv.min.js"></script>
         <script src="assets/js/respond.min.js"></script>
     <![endif]-->
+	<style>
+        /* Body & Background */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            /* background-image: url('https://images.unsplash.com/photo-1623261742887-e23376d50b6c?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); */
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+        h5 {
+            background: linear-gradient(135deg, #007bff, #00c6ff); /* gradient */
+            -webkit-background-clip: text;   /* clip gradient to text (Chrome/Safari) */
+            -webkit-text-fill-color: transparent; /* make text transparent to show gradient */
+            background-clip: text; /* Firefox */
+            color: transparent;    /* fallback */
+        }
+
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #004e92, #000428);
+            padding: 15px 30px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .navbar .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #00d4ff !important;
+            letter-spacing: 1px;
+        }
+
+        .navbar-nav .nav-link {
+            color: #fff !important;
+            margin: 0 12px;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #00d4ff !important;
+            transform: translateY(-2px);
+        }
+
+        .navbar-nav .active {
+            color: #ffcc00 !important;
+        }
+
+        /* Section Overlay */
+        .section {
+            padding: 80px 20px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 0;
+        }
+
+        .section .container-fluid,
+        .section .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header h2,
+        .banner-header h1 {
+            font-weight: 700;
+            color: #00d4ff;
+        }
+
+        .section-header p,
+        .banner-header p {
+            font-size: 1.1rem;
+            color: #e6f9ff;
+        }
+
+        /* Cards & Widgets */
+        .profile-widget,
+        .feature-item,
+        .speicality-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .profile-widget:hover,
+        .feature-item:hover,
+        .speicality-item:hover {
+            transform: translateY(-8px);
+        }
+
+        .feature-item img {
+            border-radius: 12px;
+            margin-bottom: 12px;
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        /* Banner */
+        .banner-header {
+            padding: 100px 20px 40px;
+        }
+
+        .banner-header h1 {
+            font-size: 3rem;
+        }
+
+        /* Card */
+
+        /* Card container */
+        .card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            height: 100%;
+            text-align: center;
+            overflow: hidden; /* keeps the gradient inside */
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        /* Gradient overlay effect */
+        .card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #007bff, #00c6ff); /* blue gradient */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            z-index: 0;
+        }
+        /* On hover/touch, show gradient blink */
+        .card:hover::after,
+        .card:active::after {
+            opacity: 0.3; /* how visible the gradient blink is */
+            animation: blink 0.6s ease-in-out;
+        }
+
+        /* Text stays above gradient */
+        .card h5,
+        .card p {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Blink animation */
+        @keyframes blink {
+            0%   { opacity: 0.3; }
+            50%  { opacity: 0.6; }
+            100% { opacity: 0.3; }
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #000428, #004e92);
+            padding: 40px 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        footer p {
+            margin: 10px 0;
+            font-size: 0.95rem;
+            color: #ddd;
+        }
+
+        footer .social-icons a {
+            margin: 0 10px;
+            color: #00d4ff;
+            font-size: 1.4rem;
+            transition: 0.3s;
+        }
+
+        footer .social-icons a:hover {
+            color: #ffcc00;
+        }
+
+        /* Transparent Login Form */
+        .account-content .login-right {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            color: #fff;
+            max-width: 400px;      /* Limit max width */
+            margin: 50px auto;     /* Center horizontally with top margin */
+        }
+
+        @media (max-width: 768px) {
+            .account-content .login-right {
+                padding: 30px 20px;
+                max-width: 90%;
+            }
+        }
+
+        .account-content .login-header h3 {
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .account-content .login-header h3 span {
+            color: #fff;
+        }
+
+        /* Inputs */
+        .account-content .form-control {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #fff;
+        }
+
+        .account-content .form-control:focus {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            box-shadow: none;
+        }
+
+        .account-content .form-floating label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Button */
+        .login-btn {
+            background: #00d4ff;
+            border: none;
+            color: #000;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            color: #000;
+            background: #00d4ff;
+        }
+
+        /* Links */
+        .account-content a {
+            color: #00d4ff;
+            transition: 0.3s;
+        }
+    </style>
 
 </head>
 	<body>
@@ -35,7 +298,18 @@
 		<div class="main-wrapper">
 		
 			<!-- Header -->
-			<header class="header">{% include 'navbar_home.html' %}</header>
+			<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+				<a class="navbar-brand" href="#"><i class="fas fa-stethoscope"></i> HealthStack</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+					<ul class="navbar-nav">
+					<li class="nav-item active"><a class="nav-link" href="{% url 'hospital_home' %}">Home</a></li>
+					<li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+					</ul>
+				</div>
+			</nav>
 			<!-- /Header -->
 			
 			<!-- Breadcrumb -->
@@ -57,24 +331,96 @@
 			<!-- /Breadcrumb -->
 			
 			<!-- Page Content -->
-			<div class="content">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-12">
-							<h5>About Us</h5>
-							<p>
-								Healthstack is an internet platform that supports numerous hospitals. It offers urgent medical aid to those in need of emergency care. Its capability of tracking, monitoring, and sharing a patient's health records across all hospitals. Patients can also view information about various hospitals and providers and schedule appointments online.
-							</p>
-						</div>
-					</div>
-				</div>
+			<!-- Page Content -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            
+            <!-- Left Column: Text -->
+            <div class="col-lg-6 mb-4">
+                <h5>About Us</h5>
+                <p style="text-align: justify;">
+                    Welcome to <strong>HealthStack</strong>, your trusted platform for seamless hospital appointments and healthcare services. Our mission is to simplify access to quality healthcare by connecting you with multiple hospitals and clinics, all in one place.
+                </p>
+                <p style="text-align: justify;">
+                    We understand that finding the right healthcare provider can be time-consuming and stressful. That’s why we’ve created an easy-to-use platform that allows you to <strong>search, compare, and book appointments</strong> with top hospitals and specialists near you, anytime and anywhere.
+                </p>
+                <p style="text-align: justify;">
+                    At <strong>HealthStack</strong>, we are committed to <strong>making healthcare more convenient, transparent, and efficient</strong>. Your health is our priority, and we strive to provide you with the best possible care at your fingertips.
+                </p>
+                <p style="text-align: center;">
+                    <strong>Your Health, Your Choice – Book with Confidence!</strong>
+                </p>
+            </div>
 
-			</div>		
+            <!-- Right Column: Cards -->
+            <div class="col-lg-6">
+                <div class="row justify-content-center text-center">
+                    
+                    <!-- Card 1 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm p-3">
+                            <h5 class="fw-bold">Multiple Hospital Options</h5>
+                            <p class="text-muted mb-0">
+                                Access a wide network of hospitals and clinics across various specialties.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm p-3">
+                            <h5 class="fw-bold">Instant Booking</h5>
+                            <p class="text-muted mb-0">
+                                Schedule appointments online without the hassle of long waiting times.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm p-3">
+                            <h5 class="fw-bold">Verified Healthcare Providers</h5>
+                            <p class="text-muted mb-0">
+                                We ensure all hospitals and doctors listed on our platform are trusted and verified.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm p-3">
+                            <h5 class="fw-bold">User-Friendly Experience</h5>
+                            <p class="text-muted mb-0">
+                                Navigate our website effortlessly, making healthcare accessible to everyone.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+     
+<!-- /Page Content -->
+
 			<!-- /Page Content -->
    
 			
 			<!-- Footer -->
-			{% include 'footer.html' %}
+			<footer id="contact">
+				<p>&copy; 2025 HealthStack. All Rights Reserved.</p>
+				<div class="social-icons">
+					<a href="#"><i class="fab fa-facebook-f"></i></a>
+					<a href="#"><i class="fab fa-twitter"></i></a>
+					<a href="#"><i class="fab fa-linkedin-in"></i></a>
+					<a href="#"><i class="fab fa-instagram"></i></a>
+				</div>
+				<p>Contact us: support@healthstack.com | +91 94422 90033</p>
+			</footer>
 			<!-- /Footer -->
 			
 		   

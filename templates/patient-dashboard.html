@@ -44,6 +44,7 @@
       <script src="assets/js/html5shiv.min.js"></script>
       <script src="assets/js/respond.min.js"></script>
     <![endif]-->
+    
   </head>
   <body>
     <!-- Main Wrapper -->
@@ -53,7 +54,7 @@
       <!-- /Header -->
 
       <!-- Breadcrumb -->
-      <div class="breadcrumb-bar">
+      <!-- <div class="breadcrumb-bar">
         <div class="container-fluid">
           <div class="row align-items-center">
             
@@ -68,12 +69,12 @@
                   </li>
                 </ol>
               </nav>
-              <h2 class="breadcrumb-title">Patient Dashboard</h2>{% include 'message.html' %}
+              <h2 class="breadcrumb-title">Patient Dashboard</h2>{% include 'message
             </div>
 
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- /Breadcrumb -->
       
       <!-- Page Content -->
@@ -116,14 +117,6 @@
                           ><span class="med-records">Medical Records</span></a
                         >
                       </li>
-                      <li class="nav-item">
-                        <a
-                          class="nav-link"
-                          href="#pat_billing"
-                          data-toggle="tab"
-                          >Billing</a
-                        >
-                      </li>
                     </ul>
                   </nav>
                   <!-- /Tab Menu -->
@@ -131,10 +124,7 @@
                   <!-- Tab Content -->
                   <div class="tab-content pt-0">
                     <!-- Appointment Tab -->
-                    <div
-                      id="pat_appointments"
-                      class="tab-pane fade show active"
-                    >
+                    <div id="pat_appointments" class="tab-pane fade show active">
                       <div class="card card-table mb-0">
                         <div class="card-body">
                           <div class="table-responsive">
@@ -142,12 +132,10 @@
                               <thead>
                                 <tr>
                                   <th>Doctor</th>
-                                  <th>Appt Date</th>
+                                  <th>Appointment Date</th>
                                   <th>Type</th>
                                   <th>Amount</th>
-                                  <th>Status</th>
-                                  <th>Payment Status</th>
-                                  <th>Action</th>
+                                  <th>Appointment status</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -180,11 +168,26 @@
                                     >
                                   </td>
                                   <td>{{appointment.appointment_type}}</td>
-                                  
                                   {% if appointment.appointment_type == 'checkup' %}
-                                  <td>{{appointment.doctor.consultation_fee}} BDT</td>
+                                  <td>
+                                    {% if appointment.doctor.consultation_fee %}
+                                      {{ appointment.doctor.consultation_fee }} INR
+                                    {% elif appointment.doctor.report_fee %}
+                                      {{ appointment.doctor.report_fee }} INR
+                                    {% else %}
+                                      N/A
+                                    {% endif %}
+                                  </td>
                                   {% else %}
-                                  <td>{{appointment.doctor.report_fee}} BDT</td>
+                                  <td>
+                                    {% if appointment.doctor.report_fee %}
+                                      {{ appointment.doctor.report_fee }} INR
+                                    {% elif appointment.doctor.consultation_fee %}
+                                      {{ appointment.doctor.consultation_fee }} INR
+                                    {% else %}
+                                      N/A
+                                    {% endif %}
+                                  </td>
                                   {% endif %}
                                   <td>
                                     {% if appointment.appointment_status == 'pending' %}
@@ -196,27 +199,6 @@
                                     {% if appointment.appointment_status == 'cancelled' %}
                                     <span class="badge badge-pill bg-danger-light">Cancelled</span>
                                     {% endif %}
-                                  </td>
-                                  <td class="text-center">
-                                    {% if appointment.payment_status == 'pending' %}
-                                    <span class="badge badge-pill bg-warning-light">Pending</span>
-                                    {% endif %}
-                                    {% if appointment.payment_status == 'VALID' %}
-                                    <span class="badge badge-pill bg-success-light">Paid</span>
-                                    {% endif %}
-                                  </td>
-
-                                  <td >
-                                    <div class="table-action">
-                                      <a
-                                        href="{% url 'ssl-payment-request' pk=appointment.patient.patient_id id=appointment.id %}"
-                                        class="btn btn-sm bg-success-light"
-                                      >
-                                        <i class="fas fa-dollar-sign"></i> Pay
-                                        Now
-                                      </a>
-                                      
-                                    </div>
                                   </td>
                                 </tr>
                                 {% endfor %}
@@ -366,71 +348,6 @@
                       </div>
                     </div>
                     <!-- /Medical Records Tab -->
-
-                    <!-- Billing Tab -->
-                    <div id="pat_billing" class="tab-pane fade">
-                      <div class="card card-table mb-0">
-                        <div class="card-body">
-                          <div class="table-responsive">
-                            <table class="table table-hover table-center mb-0">
-                              <thead>
-                                <tr>
-                                  <th>Doctor</th>
-                                  <th>Tranx ID</th>
-                                  <th>Tranx Date</th>
-                                  <th>Amount</th>
-                                  <th>Card Type</th>
-                                  <th>Card Issuer</th>
-                                  <th>Payment Status</th>
-                      
-                                </tr>
-                              </thead>
-                              <tbody>
-
-                                {% for payment in payments %}
-                                <tr>
-                                  <td>
-                                    <h2 class="table-avatar">
-                                      <a
-                                        href="doctor-profile.html"
-                                        class="avatar avatar-sm mr-2"
-                                      >
-                                        <img
-                                          class="avatar-img rounded-circle"
-                                          src="{{payment.appointment.doctor.featured_image.url}}"
-                                          alt="User Image"
-                                        />
-                                      </a>
-                                      <a href="doctor-profile.html"
-                                        >{{payment.appointment.doctor.name}} <span>{{payment.appointment.doctor.department}}</span></a
-                                      >
-                                    </h2>
-                                  </td>
-                                  <td>{{payment.transaction_id}}</td>
-                                  <td>{{payment.transaction_date}}</td>
-                                  <td>{{payment.currency_amount}} BDT</td>
-                                  <td>{{payment.card_type}}</td>
-                                  <td>{{payment.card_issuer}}</td>
-                                  <td>
-                                    {% if payment.status == 'VALID' %}
-                                    <span class="badge badge-pill bg-success-light">Success</span>
-                                    {% else %}
-                                    <span class="badge badge-pill bg-warning-light">Pending</span>
-                                    {% endif %}
-                                  </td>
-                            
-                                </tr>
-                                {% endfor %}
-                          
-                             
-
-
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                     <!-- /Billing Tab -->
                   </div>
                   <!-- Tab Content -->
@@ -438,66 +355,906 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <!-- /Page Content -->
+            <!-- AI Appointment Chatbot -->
+              <!-- AI Face Button -->
+              <button id="ai-face-btn" aria-label="AI Assistant" title="AI Assistant"
+                      style="position: fixed; bottom: 100px; right: 40px; z-index: 99999; background: transparent; border: none; padding:0; cursor: pointer; display:flex; align-items:center; justify-content:center;">
+                <img id="ai-face-img"
+                    src="{% static 'HealthStack-System/images/ai-face.png' %}"
+                    alt="AI Assistant"
+                    style="width:64px; height:64px; border-radius:50%; box-shadow:0 6px 18px rgba(0,0,0,0.2); background:#fff; display:block; object-fit:cover;">
+              </button>
 
-      <!-- Footer -->
-      {% include 'footer.html' %}
-      <!-- /Footer -->
+<script>
+  // ensure the image is visible and provide a fallback if missing
+  (function(){
+    const img = document.getElementById('ai-face-img');
+    const btn = document.getElementById('ai-face-btn');
+
+    // if the image fails to load, replace with a simple SVG fallback so the UI is always visible
+    img.onerror = function(){
+      img.onerror = null;
+      img.style.display = 'none';
+
+      const fallback = document.createElement('span');
+      fallback.setAttribute('aria-hidden', 'true');
+      fallback.style.width = '64px';
+      fallback.style.height = '64px';
+      fallback.style.display = 'inline-flex';
+      fallback.style.alignItems = 'center';
+      fallback.style.justifyContent = 'center';
+      fallback.style.borderRadius = '50%';
+      fallback.style.background = 'linear-gradient(135deg,#00d4ff,#004e92)';
+      fallback.style.color = '#fff';
+      fallback.style.boxShadow = '0 6px 18px rgba(0,0,0,0.2)';
+      fallback.style.fontSize = '28px';
+      fallback.textContent = '🤖';
+      btn.appendChild(fallback);
+      console.warn('AI face image not found at:', img.src);
+    };
+
+    // quick check: if image is present but dimensions collapsed, force visible styles
+    img.onload = function() {
+      img.style.opacity = '1';
+      img.style.visibility = 'visible';
+    };
+  })();
+</script>
+              <!-- AI Chatbot Modal -->
+              <div id="ai-chatbot-modal">
+                <div class="ai-chatbot">
+                  <!-- Header -->
+                  <div class="chat-header">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div style="width:32px;height:32px;background:#00d4ff;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-robot" style="color:#fff;font-size:16px;"></i>
+                      </div>
+                      <div>
+                        <div>Appointment Assistant</div>
+                        <div class="status">Online • Ready to help</div>
+                      </div>
+                    </div>
+                    <button onclick="closeChatbot()" class="close-btn" aria-label="Close">×</button>
+                  </div>
+
+                  <!-- Messages Container -->
+                  <div id="chat-messages">
+                    <!-- Messages will be appended here -->
+                  </div>
+
+                  <!-- Options Container -->
+                  <div id="chat-options">
+                    <!-- Options will be appended here -->
+                  </div>
+                  <!-- Core booking intelligence: free‑text input -->
+                  <div id="chat-input-row" style="padding:12px 16px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); display:flex; gap:8px;">
+                    <input id="chat-text" type="text" autocomplete="off"
+                           placeholder="Describe your symptoms (e.g., severe chest pain for 2 hours)…"
+                           style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.25); background:#0b2a66; color:#fff;">
+                    <button id="chat-send" class="chat-option-btn" style="min-width:96px;">Send</button>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+/* Clean, single chatbot implementation — preserves UI and avoids changing layout */
+(function(){
+  // reuse existing variables if already declared
+  const aiFaceBtn = document.getElementById('ai-face-btn');
+  const chatbotModal = document.getElementById('ai-chatbot-modal');
+  const chatMessages = document.getElementById('chat-messages');
+  const chatOptions = document.getElementById('chat-options');
+  const chatText = document.getElementById('chat-text');
+  const chatSend = document.getElementById('chat-send');
+  if(!chatMessages||!chatOptions) return;
+
+  // Prevent duplicate submissions from double-bound handlers
+  let bookingInFlight = false;
+
+  // symptom config (kept local)
+  const SYMPTOM_CATEGORIES = [
+    { id:'general', name:'General', symptoms:[
+      {code:'fever', name:'Fever'},
+      {code:'fatigue', name:'Fatigue'},
+      {code:'headache', name:'Headache'},
+      {code:'nausea', name:'Nausea'}
+    ]},
+    { id:'resp', name:'Respiratory', symptoms:[
+      {code:'cough', name:'Cough'},
+      {code:'shortness of breath', name:'Shortness of Breath'},
+      {code:'chest pain', name:'Chest Pain'}
+    ]},
+    { id:'neuro', name:'Neurological', symptoms:[
+      {code:'dizziness', name:'Dizziness'},
+      {code:'memory issues', name:'Memory Issues'}
+    ]},
+    { id:'derm', name:'Dermatology', symptoms:[
+      {code:'rash', name:'Rash'},
+      {code:'itching', name:'Itching'}
+    ]}
+  ];
+  // local rules for fallback filtering
+  // Allowed specializations for matching
+  const ALLOWED_SPECIALTIES = ['Cardiologist','General','Cardiology','Dermatology','Oncology','Neurology'];
+  const SYMPTOM_TO_SPECIALTIES = {
+    'fever':['General'],
+    'fatigue':['General'],
+    'headache':['Neurology'],
+    'nausea':['General'],
+    'cough':['General','Cardiology'],
+    'shortness of breath':['Cardiology','Neurology'],
+    'chest pain':['Cardiology','Cardiologist'],
+    'dizziness':['Neurology','Cardiology'],
+    'memory issues':['Neurology'],
+    'rash':['Dermatology'],
+    'itching':['Dermatology']
+  };
+
+  // NLU dictionaries
+  const SYMPTOM_SYNONYMS = {
+    fever:['fever','feverish','high temperature','temperature'],
+    cough:['cough','coughing'],
+    'sore throat':['sore throat','throat pain'],
+    headache:['headache','head pain','migraine'],
+    fatigue:['fatigue','tired','weakness','exhausted','low energy'],
+    nausea:['nausea','vomit','vomiting','queasy'],
+    'chest pain':['chest pain','chest tightness','chest pressure'],
+    'shortness of breath':['shortness of breath','breathless','trouble breathing','dyspnea'],
+    dizziness:['dizziness','dizzy','fainting','lightheaded','syncope'],
+    rash:['rash','rashes','skin redness','red patches'],
+    itching:['itching','itchy'],
+  };
+  const SEVERITY_WORDS = {
+    high:['severe','very bad','extreme','crushing','unbearable','heavy','profuse','unable to','can’t breathe'],
+    medium:['moderate','persistent','constant','worsening','increasing'],
+    low:['mild','slight','occasional','intermittent']
+  };
+  const EMERGENCY_CUES = ['chest pain','shortness of breath','fainting','severe bleeding','stroke','not breathing','unconscious'];
+
+  let state = {
+    symptomCategory:null,
+    symptomsChosen:[],
+    selectedDoctor:null,
+    selectedDoctorName:null,
+    selectedDate:null,
+    selectedTime:null,
+    appointmentType:'checkup',
+    reasonSummary:'',
+    triage:{ level:'Routine', score:0, rationale:[] }
+  };
+
+  function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function getCurrentTime(){ return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+  function getCookie(name){ let v=null; if(document.cookie){ document.cookie.split(';').forEach(c=>{const kv=c.trim().split('='); if(kv[0]===name) v=decodeURIComponent(kv[1]);}); } return v; }
+
+  if(aiFaceBtn){
+    aiFaceBtn.addEventListener('click', ()=>{
+      if(chatbotModal) chatbotModal.style.display='block';
+      if(!chatMessages.querySelector('.chat-message.bot')){
+        appendMessage('bot',"Hello! I'm your HealthStack assistant. You can type your symptoms below or use the buttons.");
+        showOptions(['View Doctor List','Symptom Checker']);
+      } else if(chatOptions.children.length===0){
+        showOptions(['View Doctor List','Symptom Checker']);
+      }
+    });
+  }
+  window.closeChatbot = ()=>{ if(chatbotModal) chatbotModal.style.display='none'; };
+
+  function appendMessage(sender,text){
+    const div=document.createElement('div');
+    div.className=`chat-message ${sender}`;
+    div.innerHTML=`<div class="message-bubble ${sender}"><div class="message-content">${escapeHtml(text)}</div><div class="message-time">${getCurrentTime()}</div></div>`;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop=chatMessages.scrollHeight;
+  }
+  function showOptions(list){
+    chatOptions.innerHTML = list.map(o=>`<button class="chat-option-btn" data-action="option" data-value="${escapeHtml(o)}">${escapeHtml(o)}</button>`).join('');
+  }
+
+  // ========== Core booking intelligence (NLU + triage + slot suggest) ==========
+  function detectSymptomsFromText(text){
+    const t = String(text||'').toLowerCase();
+    const found = [];
+    for(const [canon, keys] of Object.entries(SYMPTOM_SYNONYMS)){
+      if(keys.some(k => t.includes(k))) found.push(canon);
+    }
+    return [...new Set(found)];
+  }
+  function extractDuration(text){
+    const t = String(text||'').toLowerCase();
+    const rx = /\b(\d+)\s*(minute|hour|day|week|month)s?\b/;
+    const m = t.match(rx);
+    return m ? `${m[1]} ${m[2]}(s)` : '';
+  }
+  function inferSeverity(text){
+    const t = String(text||'').toLowerCase();
+    if(SEVERITY_WORDS.high.some(w=>t.includes(w))) return 'severe';
+    if(SEVERITY_WORDS.medium.some(w=>t.includes(w))) return 'moderate';
+    if(SEVERITY_WORDS.low.some(w=>t.includes(w))) return 'mild';
+    return '';
+  }
+  function triageFrom(symptoms, severity, text){
+    const t = String(text||'').toLowerCase();
+    let score = 0; const why = [];
+    if(severity==='severe'){ score+=3; why.push('severe'); }
+    if(symptoms.includes('chest pain')){ score+=5; why.push('chest pain'); }
+    if(symptoms.includes('shortness of breath')){ score+=5; why.push('shortness of breath'); }
+    if(EMERGENCY_CUES.some(c=>t.includes(c))){ score+=5; why.push('emergency cue'); }
+    if(symptoms.includes('dizziness')){ score+=2; }
+    let level='Routine';
+    if(score>=7) level='Emergency';
+    else if(score>=3) level='Urgent';
+    return { level, score, rationale:why };
+  }
+  function buildReasonSummary(symptoms, duration, severity, text){
+    const parts=[];
+    if(symptoms.length) parts.push(symptoms.join(', '));
+    if(severity) parts.push(`${severity}`);
+    if(duration) parts.push(`for ${duration}`);
+    const extra = text.trim();
+    const base = parts.join(' • ');
+    return base ? `${base}. ${extra}` : extra || 'General checkup';
+  }
+  function suggestBestSlot(triage){
+    const now = new Date();
+    const pick = new Date(now);
+    if(triage.level==='Emergency'){
+      // closest 30-min block within 2 hours
+      pick.setMinutes(Math.ceil(pick.getMinutes()/30)*30,0,0);
+    } else if(triage.level==='Urgent'){
+      // same day next available hour, else next morning 10:30
+      if(now.getHours()<17){
+        pick.setMinutes(0,0,0);
+        pick.setHours(now.getHours()+1);
+      } else {
+        pick.setDate(pick.getDate()+1); pick.setHours(10,30,0,0);
+      }
+    } else {
+      // routine → next business day 10:30
+      pick.setDate(pick.getDate()+1); pick.setHours(10,30,0,0);
+    }
+    const d = pick.toISOString().split('T')[0];
+    const t = pick.toTimeString().slice(0,5);
+    const dp=document.getElementById('date-picker');
+    const tp=document.getElementById('time-picker');
+    if(dp) dp.value = d;
+    if(tp) tp.value = t;
+    return {date:d,time:t};
+  }
+
+  function handleUserFreeText(){
+    const txt=(chatText?.value||'').trim();
+    if(!txt) return;
+    appendMessage('user', txt);
+    if(chatText) chatText.value='';
+    const symptoms = detectSymptomsFromText(txt);
+    const duration = extractDuration(txt);
+    const severity = inferSeverity(txt);
+    const triage   = triageFrom(symptoms, severity, txt);
+    const reason   = buildReasonSummary(symptoms, duration, severity, txt);
+    state.symptomsChosen = symptoms.length ? symptoms : state.symptomsChosen;
+    state.triage = triage;
+    state.reasonSummary = reason;
+    if(symptoms.length){
+      appendMessage('bot', `Detected: ${symptoms.join(', ')}`);
+    } else {
+      appendMessage('bot', 'Could not detect specific symptoms. I will still suggest a general doctor.');
+    }
+    appendMessage('bot', `Triage: ${triage.level}${triage.rationale.length?' • '+triage.rationale.join(', '):''}`);
+    // Try AI doctor matching first
+    fetchDoctorRecommendations(symptoms.length? symptoms : ['fever']);
+  }
+  if(chatSend) chatSend.addEventListener('click', handleUserFreeText);
+  if(chatText) chatText.addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); handleUserFreeText(); }});
+  // ===========================================================================
+
+  // Single delegated handler for all option clicks
+  chatOptions.addEventListener('click', e=>{
+    const btn = e.target.closest('.chat-option-btn');
+    if(!btn) return;
+    const action = btn.dataset.action || '';
+    const value  = (btn.dataset.value || '').toLowerCase();
+
+    if(action === 'select-doctor'){
+      selectDoctor(btn.dataset.doctorId, btn.dataset.doctorName);
+      return;
+    }
+    if(action === 'symptom-category'){
+      state.symptomCategory=btn.dataset.catId;
+      appendMessage('user', btn.textContent.trim());
+      loadCategorySymptoms(state.symptomCategory);
+      return;
+    }
+    if(action === 'symptom-add'){
+      toggleSymptom(btn.dataset.symptom, btn);
+      return;
+    }
+    if(action === 'symptom-complete'){
+      finalizeSymptomsDynamic();
+      return;
+    }
+    if(action === 'suggest-slot'){
+      const picked = suggestBestSlot(state.triage||{level:'Routine'});
+      appendMessage('bot', `Suggested: ${picked.date} at ${picked.time}`);
+      return;
+    }
+
+    // flow controls
+    if(value === 'type-checkup'){ state.appointmentType='checkup'; appendMessage('user','Medical Checkup'); renderDateStep(); return; }
+    if(value === 'type-report'){ state.appointmentType='report';  appendMessage('user','Report Consultation'); renderDateStep(); return; }
+    if(value === 'date-next'){ handleDateNext(); return; }
+    if(value === 'time-next'){ handleTimeNext(); return; }
+
+    handleOption(btn.dataset.value || btn.textContent.trim());
+  });
+
+  // Also capture input changes so user doesn’t have to press Next
+  chatOptions.addEventListener('change', e=>{
+    if(e.target.id === 'date-picker'){
+      state.selectedDate = e.target.value;
+    }
+    if(e.target.id === 'time-picker'){
+      state.selectedTime = e.target.value;
+    }
+  });
+
+  function selectDoctor(id, name){
+    state.selectedDoctor = id;
+    state.selectedDoctorName = name;
+    appendMessage('user', `Dr. ${name}`);
+    if(state.triage?.level){
+      appendMessage('bot', `Triage suggests: ${state.triage.level}. I can suggest a suitable slot.`);
+    }
+    renderApptType();
+  }
+
+  function renderApptType(){
+    appendMessage('bot','Choose appointment type:');
+    chatOptions.innerHTML = `
+      <button class="chat-option-btn" data-action="option" data-value="type-checkup">Medical Checkup</button>
+      <button class="chat-option-btn" data-action="option" data-value="type-report">Report Consultation</button>
+      <button class="chat-option-btn" data-action="option" data-value="Main Menu">Main Menu</button>
+    `;
+  }
+
+  function renderDateStep(){
+    appendMessage('bot','Select a date:');
+    const today = new Date().toISOString().split('T')[0];
+    chatOptions.innerHTML = `
+      <div class="form-block">
+        <label style="font-size:13px;color:#475569;">Date</label>
+        <input type="date" id="date-picker" min="${today}">
+      </div>
+      <button class="chat-option-btn" data-action="suggest-slot">Suggest Best Slot</button>
+      <button class="chat-option-btn" data-action="option" data-value="date-next">Next →</button>
+      <button class="chat-option-btn" data-action="option" data-value="Main Menu">Cancel</button>
+    `;
+  }
+
+  function handleDateNext(){
+    const dp = document.getElementById('date-picker');
+    if(!dp || !dp.value){
+      appendMessage('bot','Please select a date.');
+      return;
+    }
+    state.selectedDate = dp.value;
+    appendMessage('user', dp.value);
+    renderTimeStep();
+  }
+
+  function renderTimeStep(){
+    appendMessage('bot','Select a time:');
+    chatOptions.innerHTML = `
+      <div class="form-block">
+        <label style="font-size:13px;color:#475569;">Time</label>
+        <input type="time" id="time-picker">
+      </div>
+      <button class="chat-option-btn" data-action="suggest-slot">Suggest Best Slot</button>
+      <button class="chat-option-btn" data-action="option" data-value="time-next">Confirm Time</button>
+      <button class="chat-option-btn" data-action="option" data-value="Main Menu">Cancel</button>
+    `;
+  }
+
+  function handleTimeNext(){
+    const tp = document.getElementById('time-picker');
+    if(!tp || !tp.value){
+      appendMessage('bot','Please select a time.');
+      return;
+    }
+    state.selectedTime = tp.value;
+    appendMessage('user', tp.value);
+    appendMessage('bot','Review and confirm:');
+    appendMessage('bot', `Reason: ${state.reasonSummary || 'Not provided'}`);
+    appendMessage('bot', `Triage: ${state.triage?.level || 'Routine'}`);
+    appendMessage('bot', `Doctor: Dr. ${state.selectedDoctorName}`);
+    appendMessage('bot', `Date: ${state.selectedDate}`);
+    appendMessage('bot', `Time: ${state.selectedTime}`);
+    chatOptions.innerHTML = `
+      <button class="chat-option-btn" data-action="confirm-booking" style="background:#00cc66;color:#fff;border:0;">Confirm & Book</button>
+      <button class="chat-option-btn" data-action="option" data-value="Main Menu" style="background:#ff4d4f;color:#fff;border:0;">Cancel</button>
+    `;
+  }
+
+  // keep your existing confirmBooking() listener; if missing, add:
+  chatOptions.addEventListener('click', e=>{
+    if(e.target.closest('.chat-option-btn')?.dataset.action === 'confirm-booking'){
+      confirmBooking();
+    }
+  });
+
+  function handleOption(opt){
+    const key=opt.toLowerCase();
+    appendMessage('user', opt);
+    chatOptions.innerHTML='';
+
+    if(key.includes('symptom checker')){ startSymptomChecker(); return; }
+    if(key.includes('view doctor')){ if (typeof fetchAllDoctors === 'function') fetchAllDoctors(); return; }
+    if(key.includes('main menu')){
+      showOptions(['View Doctor List','Symptom Checker']);
+      return;
+    }
+    if(key==='type-checkup'){ state.appointmentType='checkup'; appendMessage('user','Medical Checkup'); askDate(); return; }
+    if(key==='type-report'){ state.appointmentType='report'; appendMessage('user','Report Consultation'); askDate(); return; }
+
+    appendMessage('bot','Unknown option.');
+    showOptions(['View Doctor List','Symptom Checker']);
+  }
+
+  /* Dynamic Symptom Checker */
+  function startSymptomChecker(){
+    state.symptomsChosen=[];
+    state.symptomCategory=null;
+    appendMessage('bot','Select a category:');
+    chatOptions.innerHTML = SYMPTOM_CATEGORIES.map(c =>
+      `<button class="chat-option-btn" data-action="symptom-category" data-cat-id="${escapeHtml(c.id)}">${escapeHtml(c.name)}</button>`
+    ).join('') + `<button class="chat-option-btn" data-action="option" data-value="Main Menu">Main Menu</button>`;
+  }
+
+  function loadCategorySymptoms(catId){
+    const cat=SYMPTOM_CATEGORIES.find(c=>c.id===catId);
+    if(!cat){
+      appendMessage('bot','Category not found.');
+      startSymptomChecker();
+      return;
+    }
+    appendMessage('bot','Select symptoms (toggle) then Complete.');
+    chatOptions.innerHTML = cat.symptoms.map(s =>
+      `<button class="chat-option-btn" data-action="symptom-add" data-symptom="${escapeHtml(s.code)}">${escapeHtml(s.name)}</button>`
+    ).join('') +
+    `<button class="chat-option-btn" data-action="symptom-complete" style="background:#00cc66;">Complete</button>` +
+    `<button class="chat-option-btn" data-action="option" data-value="Main Menu">Main Menu</button>`;
+  }
+
+  function toggleSymptom(code, btn){
+    const i=state.symptomsChosen.indexOf(code);
+    if(i===-1){ state.symptomsChosen.push(code); btn.style.opacity='.55'; }
+    else { state.symptomsChosen.splice(i,1); btn.style.opacity='1'; }
+  }
+
+  function finalizeSymptomsDynamic(){
+    if(state.symptomsChosen.length===0){
+      appendMessage('bot','Select at least one symptom.');
+      return;
+    }
+    appendMessage('bot','Selected: '+state.symptomsChosen.join(', '));
+    // compute triage + summary from buttons (assume routine)
+    state.triage = { level:'Routine', score:0, rationale:[] };
+    state.reasonSummary = buildReasonSummary(state.symptomsChosen, '', '', '');
+    // Call dynamic AI doctor matcher first
+    fetchDoctorRecommendations(state.symptomsChosen);
+  }
+
+  function fetchDoctorRecommendations(symptoms){
+    appendMessage('bot','Matching doctors...');
+    const csrftoken=getCookie('csrftoken');
+    fetch('/ai/doctor-matching/',{
+      method:'POST',
+      credentials:'same-origin',
+      headers:{'Content-Type':'application/json','X-CSRFToken':csrftoken},
+      body:JSON.stringify({ symptoms })
+    })
+    .then(r=>r.ok?r.json():r.json().then(j=>Promise.reject(j)))
+    .then(list=>{
+      if(Array.isArray(list) && list.length){
+        renderDoctorButtons(list);
+      } else {
+        appendMessage('bot','No direct matches from AI. Using fallback filter.');
+        fallbackFilterDoctors(symptoms);
+      }
+    })
+    .catch(()=>{
+      appendMessage('bot','AI endpoint failed. Using fallback filter.');
+      fallbackFilterDoctors(symptoms);
+    });
+  }
+
+  // Fallback: fetch all doctors then filter client-side by specialty rules
+  function fallbackFilterDoctors(symptoms){
+    const specialties = inferSpecialties(symptoms);
+    fetch('/doctor/get-doctor-list/', {credentials:'same-origin'})
+      .then(r=>r.ok?r.json():Promise.reject())
+      .then(data=>{
+        const docs = (data && Array.isArray(data.doctors))? data.doctors:[];
+        const scored = docs.map(d=>{
+          const dept=(d.department_name||'').toLowerCase();
+          const spec=(d.specialization_name||'').toLowerCase();
+          let score=0;
+            specialties.forEach(sp=>{
+              const s = sp.toLowerCase();
+              if(!ALLOWED_SPECIALTIES.map(a=>a.toLowerCase()).includes(s)) return;
+              if(dept===s || spec===s) score+=3;
+              else if(dept.includes(s) || spec.includes(s)) score+=1;
+            });
+          return {...d, score};
+        }).filter(d=>d.score>0)
+          .sort((a,b)=>b.score-a.score || a.name.localeCompare(b.name))
+          .slice(0,10);
+        if(!scored.length){
+          appendMessage('bot','No matching doctors for those symptoms. Try Symptom Checker.');
+          showOptions(['View Doctor List','Symptom Checker','Main Menu']);
+          return;
+        }
+        renderDoctorButtons(scored);
+      })
+      .catch(()=>{
+        appendMessage('bot','Failed to load doctors.');
+        showOptions(['Symptom Checker','Main Menu']);
+      });
+  }
+
+  // View Doctor List: fetch all registered doctors and render buttons
+  function fetchAllDoctors(){
+    appendMessage('bot','Loading doctor list...');
+    fetch('/doctor/get-doctor-list/', {credentials:'same-origin'})
+      .then(r=>r.ok?r.json():Promise.reject())
+      .then(data=>{
+        const docs = (data && Array.isArray(data.doctors))? data.doctors:[];
+        if(!docs.length){
+          appendMessage('bot','No doctors available right now.');
+          showOptions(['Symptom Checker','Main Menu']);
+          return;
+        }
+        renderDoctorButtons(docs);
+      })
+      .catch(()=>{
+        appendMessage('bot','Failed to load doctor list.');
+        showOptions(['Symptom Checker','Main Menu']);
+      });
+  }
+
+  function renderDoctorButtons(list){
+    appendMessage('bot','Doctors:');
+    chatOptions.innerHTML = list.map(d=>{
+      const id=d.id || d.doctor_id;
+      const name=d.name || 'Doctor';
+      const dept=d.department_name || '';
+      const spec=d.specialization_name || '';
+      const hosp=d.hospital_name || '';
+      const meta=[spec||dept,hosp].filter(Boolean).join(' • ');
+      return `<button class="chat-option-btn" data-action="select-doctor" data-doctor-id="${id}" data-doctor-name="${escapeHtml(name)}">${escapeHtml(name)}<br/><small>${escapeHtml(meta)}</small></button>`;
+    }).join('') + `<button class="chat-option-btn" data-action="option" data-value="Main Menu">Main Menu</button>`;
+  }
+
+  function inferSpecialties(symptoms){
+    const tally={};
+    const allowedSet = new Set(ALLOWED_SPECIALTIES.map(a=>a.toLowerCase()));
+    symptoms.forEach(s=>{
+      (SYMPTOM_TO_SPECIALTIES[s]||[]).forEach(sp=>{
+        const key = sp.toLowerCase();
+        if(allowedSet.has(key)){
+          tally[key]=(tally[key]||0)+1;
+        }
+      });
+    });
+    // Return canonical casing from ALLOWED_SPECIALTIES
+    const order = Object.entries(tally).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
+    const canonical = ALLOWED_SPECIALTIES.reduce((m,a)=>{ m[a.toLowerCase()]=a; return m; },{});
+    return order.map(k=>canonical[k]||k);
+  }
+
+  /* Booking flow (reuses dynamic doctor selection) */
+  function selectDoctor(id,name){
+    state.selectedDoctor=id;
+    state.selectedDoctorName=name;
+    appendMessage('user','Dr. '+name);
+    appendMessage('bot','Choose appointment type:');
+    chatOptions.innerHTML = `
+      <button class="chat-option-btn" data-action="option" data-value="type-checkup">Medical Checkup</button>
+      <button class="chat-option-btn" data-action="option" data-value="type-report">Report Consultation</button>
+      <button class="chat-option-btn" data-action="option" data-value="Main Menu">Main Menu</button>`;
+  }
+
+  function askDate(){
+    appendMessage('bot','Select a date:');
+    const today=new Date().toISOString().split('T')[0];
+    chatOptions.innerHTML=`
+      <div style="width:100%">
+        <input type="date" id="date-picker" min="${today}" style="width:100%; padding:8px; border-radius:6px; margin-bottom:8px;">
+        <button class="chat-option-btn" data-action="suggest-slot">Suggest Best Slot</button>
+        <button class="chat-option-btn" data-action="option" data-value="date-next">Next →</button>
+      </div>`;
+  }
+
+  chatOptions.addEventListener('click', e=>{
+    const btn=e.target.closest('.chat-option-btn');
+    if(!btn) return;
+    const v=(btn.dataset.value||'').toLowerCase();
+    if(v==='date-next'){
+      const dp=document.getElementById('date-picker');
+      if(!dp||!dp.value){ appendMessage('bot','Select a date.'); return; }
+      state.selectedDate=dp.value;
+      appendMessage('user', dp.value);
+      chatOptions.innerHTML=`
+        <div style="width:100%">
+          <input type="time" id="time-picker" style="width:100%; padding:8px; border-radius:6px; margin-bottom:8px;">
+          <button class="chat-option-btn" data-action="suggest-slot">Suggest Best Slot</button>
+          <button class="chat-option-btn" data-action="option" data-value="time-next">Confirm Time</button>
+        </div>`;
+    }
+    if(v==='time-next'){
+      const tp=document.getElementById('time-picker');
+      if(!tp||!tp.value){ appendMessage('bot','Select a time.'); return; }
+      state.selectedTime=tp.value;
+      appendMessage('user', tp.value);
+      appendMessage('bot','Confirm booking:');
+      appendMessage('bot',`Reason: ${state.reasonSummary || 'Not provided'}`);
+      appendMessage('bot',`Triage: ${state.triage?.level || 'Routine'}`);
+      appendMessage('bot',`Doctor: Dr. ${state.selectedDoctorName}`);
+      appendMessage('bot',`Date: ${state.selectedDate}`);
+      appendMessage('bot',`Time: ${state.selectedTime}`);
+      chatOptions.innerHTML=`
+        <button class="chat-option-btn" data-action="confirm-booking" style="background:#00cc66;">Confirm & Book</button>
+        <button class="chat-option-btn" data-action="option" data-value="Main Menu" style="background:#ff4444;">Cancel</button>`;
+    }
+    if(btn.dataset.action==='confirm-booking'){
+      confirmBooking();
+    }
+  });
+
+  function confirmBooking(){
+    if(bookingInFlight) { return; }
+    bookingInFlight = true;
+    if(!state.selectedDoctor || !state.selectedDate || !state.selectedTime){
+      appendMessage('bot','Incomplete details.');
+      bookingInFlight = false;
+      return;
+    }
+    appendMessage('bot','Booking...');
+    const csrftoken=getCookie('csrftoken');
+    fetch('/doctor/book-appointment/', {
+      method:'POST',
+      credentials:'same-origin',
+      headers:{'Content-Type':'application/json','X-CSRFToken':csrftoken},
+      body:JSON.stringify({
+        doctor_id:state.selectedDoctor,
+        date:state.selectedDate,
+        time:state.selectedTime,
+        appointment_type:state.appointmentType,
+        reason_summary: state.reasonSummary || '',
+        triage_level: state.triage?.level || 'Routine'
+      })
+    })
+    .then(r=>r.ok?r.json():r.json().then(j=>Promise.reject(j)))
+    .then(j=>{
+      if(j.success){
+        appendMessage('bot','Booked. Ref: '+(j.appointment_id||j.serial_number||''));
+        state.selectedDoctor=null;
+        showOptions(['View Doctor List','Symptom Checker','Main Menu']);
+      } else {
+        appendMessage('bot','Failed: '+(j.error||'Unknown'));
+        showOptions(['Symptom Checker','Main Menu']);
+      }
+      bookingInFlight = false;
+    })
+    .catch(err=>{
+      appendMessage('bot','Error: '+escapeHtml(err.error||'Request failed'));
+      showOptions(['Symptom Checker','Main Menu']);
+      bookingInFlight = false;
+    });
+  }
+
+  // expose for debugging
+  window._dynamicMatcher = { startSymptomChecker };
+})();
+</script>
+            </div>
+ 
+    </div>
+    <!-- /Page Content -->
+    <!-- Footer -->
+    <footer id="contact">
+    <p>&copy; 2025 HealthStack. All Rights Reserved.</p>
+    <div class="social-icons">
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-twitter"></i></a>
+    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    </div>
+    <p>Contact us: support@healthstack.com | +91 94422 90033</p>
+    <style> footer {
+    background: linear-gradient(135deg, #000428, #004e92); padding: 10px 20px;
+    text-align: center; color: #fff;
+    }
+    footer p { margin: 10px 0;
+    font-size: 0.95rem; color: #ddd;
+    }
+    footer .social-icons a { margin: 0 10px; color: #00d4ff;
+    font-size: 1.4rem; transition: 0.3s;
+    }
+    footer .social-icons a:hover { color: #ffcc00;
+    }
+    </style>
+    </footer>
+    <!-- /Footer -->
     </div>
     <!-- /Main Wrapper -->
     <!-- <div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
-      <div class="modal-dialog modal-dialog-centered text-center" role="document" >
-        <div class="modal-content">
-        	<div class="modal-header">
-            <h5 class="modal-title">Delete</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="form-content p-2">
-              <h4 class="modal-title">Delete</h4>
-              <p class="mb-4">Are you sure want to delete?</p>
-              <button type="button" class="btn btn-primary">Save </button>
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="modal-dialog modal-dialog-centered text-center" role="document" >
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title">Delete</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    
+    <div class="form-content p-2">
+    <h4 class="modal-title">Delete</h4>
+    <p class="mb-4">Are you sure want to delete?</p>
+    <button type="button" class="btn btn-primary">Save </button>
+    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+    </div>
+    </div>
+    </div>
+    </div>
     </div> -->
-
     <!-- jQuery -->
     <script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script>
-
     <!-- Bootstrap Core JS -->
     <script src="{% static 'HealthStack-System/js/Normal/popper.min.js' %}"></script>
     <script src="{% static 'HealthStack-System/js/Normal/bootstrap.min.js' %}"></script>
-
     <!-- Sticky Sidebar JS -->
-    <script src="{% static 'HealthStack-System/plugins/Normal/theia-sticky-sidebar/ResizeSensor.js' %}"></script>
-    <script src="{% static 'HealthStack-System/plugins/Normal/theia-sticky-sidebar/theia-sticky-sidebar.js' %}"></script>
-
+    <script src="{% static 'HealthStack-System/plugins/Normal/theia-sticky-sidebar/ResizeSensor.js'
+    %}"></script>
+    <script src="{% static 'HealthStack-System/plugins/Normal/theia-sticky-sidebar/theia-sticky-sidebar.js'
+    %}"></script>
     <!-- Custom JS -->
     <script src="{% static 'HealthStack-System/Outside_assets/js/script.js' %}"></script>
-
     <!-- Searchbar JS -->
     <script src="{% static 'HealthStack-System/js/Normal/sidebar.js' %}"></script>
+    <style>
+  /* Chatbot container */
+  #ai-chatbot-modal {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: clamp(320px, 30vw, 420px);
+    max-width: 96vw;
+    max-height: 85vh;
+    z-index: 99999; /* ensure on top */
+    display: none;  /* toggled by JS */
+  }
 
-    {% if messages %}
-    <script>
-        {% for message in messages %}
-            $(document).ready(function () {
-                $('.toast').toast('show');
-            });
-        {% endfor %}
-    </script>
-  {% endif %}
+  /* Panel */
+  #ai-chatbot-modal .ai-chatbot {
+    background: linear-gradient(135deg, #000428, #004e92);  /* old dark theme */
+    color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 12px 28px rgba(2,6,23,.25), 0 2px 6px rgba(2,6,23,.15);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: clamp(520px, 85vh, 900px);
+  }
 
+  /* Header */
+  #ai-chatbot-modal .chat-header {
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    color: #ffffff;
+    padding: 12px 16px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #ai-chatbot-modal .chat-header .status {
+    font-size: 12px; opacity: .9;
+  }
+  #ai-chatbot-modal .close-btn {
+    background: rgba(255,255,255,0.15);
+    border: 0;
+    color: #fff;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
 
+  /* Messages area */
+  #chat-messages {
+    background: rgba(255,255,255,0.05);
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1 1 auto;                    /* fill available height between header and footer */
+    min-height: 0;                     /* allow proper flexbox shrinking to bottom */
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .chat-message { margin: 8px 0; display: flex; }
+  .chat-message.user { justify-content: flex-end; }
+  .message-bubble {
+    max-width: 78%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    line-height: 1.35;
+    box-shadow: 0 1px 2px rgba(2,6,23,.06);
+  }
+  .message-bubble.bot {
+    background: #f1f5f9;               /* light slate */
+    color: #0f172a;
+  }
+  .message-bubble.user {
+    background: #2563eb;               /* blue-600 */
+    color: #ffffff;
+  }
+  .message-time {
+    font-size: 11px;
+    opacity: .7;
+    margin-top: 4px;
+  }
 
+  /* Options footer */
+  #chat-options {
+    position: relative; /* keep in normal flow so input row sits at bottom */
+    background: rgba(255,255,255,0.02);
+    padding: 10px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  /* Input row naturally sits under options at the bottom via flex on #chat-messages */
+  .chat-option-btn {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;         /* slate-300 */
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .chat-option-btn:hover {
+    background: #eff6ff;               /* blue-50 */
+    border-color: #2563eb;
+  }
+
+  /* make inputs visible and clickable */
+  #chat-options input[type="date"],
+  #chat-options input[type="time"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0f172a;
+    box-sizing: border-box;
+  }
+  #chat-options .form-block {
+    grid-column: 1 / -1; /* span full width of the grid */
+    width: 100%;
+  }
+
+  /* Make scrollbars visible */
+  #chat-messages::-webkit-scrollbar { width: 10px; }
+  #chat-messages::-webkit-scrollbar-thumb {
+    background: #cbd5e1; border-radius: 8px;
+  }
+
+  /* Small screens */
+  @media (max-width: 600px){
+    #ai-chatbot-modal { right: 10px; left: 10px; width: auto; height: auto; bottom: 10px; }
+    #ai-chatbot-modal .ai-chatbot { height: 70vh; }
+    #chat-options { grid-template-columns: 1fr; }
+  }
+</style>
   </body>
-
-  <!-- doccure/patient-dashboard.html  30 Nov 2019 04:12:16 GMT -->
+<!-- doccure/patient-dashboard.html 30 Nov 2019 04:12:16 GMT -->
 </html>

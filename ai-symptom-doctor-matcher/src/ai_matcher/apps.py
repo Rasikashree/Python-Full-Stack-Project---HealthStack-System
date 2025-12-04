@@ -1,0 +1,205 @@
+from django.apps import AppConfig
+
+class AiMatcherConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'ai_matcher'
+    verbose_name = 'AI Symptom Doctor Matcher'
+
+// AI Symptom Checker Implementation
+(function() {
+  const SYMPTOM_CATEGORIES = [
+    { id: 'general', name: 'General', symptoms: [
+      { code: 'fever', name: 'Fever' },
+      { code: 'fatigue', name: 'Fatigue' },
+      { code: 'headache', name: 'Headache' },
+      { code: 'nausea', name: 'Nausea' }
+    ]},
+    { id: 'resp', name: 'Respiratory', symptoms: [
+      { code: 'cough', name: 'Cough' },
+      { code: 'shortness of breath', name: 'Shortness of Breath' },
+      { code: 'chest pain', name: 'Chest Pain' }
+    ]},
+    { id: 'neuro', name: 'Neurological', symptoms: [
+      { code: 'dizziness', name: 'Dizziness' },
+      { code: 'memory issues', name: 'Memory Issues' }
+    ]},
+    { id: 'derm', name: 'Dermatology', symptoms: [
+      { code: 'rash', name: 'Rash' },
+      { code: 'itching', name: 'Itching' }
+    ]}
+  ];
+
+  const SYMPTOM_TO_SPECIALTIES = {
+    'fever': ['General Medicine'],
+    'fatigue': ['General Medicine', 'Endocrinology'],
+    'headache': ['Neurology'],
+    'nausea': ['Gastroenterology'],
+    'cough': ['Pulmonology'],
+    'shortness of breath': ['Pulmonology', 'Cardiology'],
+    'chest pain': ['Cardiology'],
+    'dizziness': ['Neurology', 'Cardiology'],
+    'memory issues': ['Neurology'],
+    'rash': ['Dermatology'],
+    'itching': ['Dermatology']
+  };
+
+  let state = {
+    symptomsChosen: [],
+    selectedDoctor: null,
+    selectedDoctorName: null,
+    selectedDate: null,
+    selectedTime: null,
+    appointmentType: 'checkup'
+  };
+
+  function appendMessage(sender, text) {
+    const div = document.createElement('div');
+    div.className = `chat-message ${sender}`;
+    div.innerHTML = `<div class="message-bubble ${sender}"><div class="message-content">${escapeHtml(text)}</div></div>`;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function startSymptomChecker() {
+    state.symptomsChosen = [];
+    appendMessage('bot', 'Select a category:');
+    chatOptions.innerHTML = SYMPTOM_CATEGORIES.map(c =>
+      `<button class="chat-option-btn" data-action="symptom-category" data-cat-id="${escapeHtml(c.id)}">${escapeHtml(c.name)}</button>`
+    ).join('') + `<button class="chat-option-btn" data-action="option" data-value="Main Menu">Main Menu</button>`;
+  }
+
+  function loadCategorySymptoms(catId) {
+    const cat = SYMPTOM_CATEGORIES.find(c => c.id === catId);
+    if (!cat) {
+      appendMessage('bot', 'Category not found.');
+      startSymptomChecker();
+      return;
+    }
+    appendMessage('bot', 'Select symptoms (toggle) then Complete.');
+    chatOptions.innerHTML = cat.symptoms.map(s =>
+      `<button class="chat-option-btn" data-action="symptom-add" data-symptom="${escapeHtml(s.code)}">${escapeHtml(s.name)}</button>`
+    ).join('') +
+    `<button class="chat-option-btn" data-action="symptom-complete" style="background:#00cc66;">Complete</button>` +
+    `<button class="chat-option-btn" data-action="option" data-value="Main Menu">Main Menu</button>`;
+  }
+
+  function toggleSymptom(code, btn) {
+    const i = state.symptomsChosen.indexOf(code);
+    if (i === -1) {
+      state.symptomsChosen.push(code);
+      btn.style.opacity = '.55';
+    } else {
+      state.symptomsChosen.splice(i, 1);
+      btn.style.opacity = '1';
+    }
+  }
+
+  function finalizeSymptomsDynamic() {
+    if (state.symptomsChosen.length === 0) {
+      appendMessage('bot', 'Select at least one symptom.');
+      return;
+    }
+    appendMessage('bot', 'Selected: ' + state.symptomsChosen.join(', '));
+    fetchDoctorRecommendations(state.symptomsChosen);
+  }
+
+  function fetchDoctorRecommendations(symptoms) {
+    appendMessage('bot', 'Matching doctors...');
+    const csrftoken = getCookie('csrftoken');
+    fetch('/ai/doctor-matching/', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+      body: JSON.stringify({ symptoms })
+    })
+    .then(r => r.ok ? r.json() : r.json().then(j => Promise.reject(j)))
+    .then(list => {
+      if (Array.isArray(list) && list.length) {
+        renderDoctorButtons(list);
+      } else {
+        appendMessage('bot', 'No direct matches from AI. Using fallback filter.');
+        fallbackFilterDoctors(symptoms);
+      }
+    })
+    .catch(() => {
+      appendMessage('bot', 'AI endpoint failed. Using fallback filter.');
+      fallbackFilterDoctors(symptoms);
+    });
+  }
+
+  function fallbackFilterDoctors(symptoms) {
+    const specialties = inferSpecialties(symptoms);
+    fetch('/doctor/get-doctor-list/', { credentials: 'same-origin' })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        const docs = (data && Array.isArray(data.doctors)) ? data.doctors : [];
+        const scored = docs.map(d => {
+          const dept = (d.department_name || '').toLowerCase();
+          let score = 0;
+          specialties.forEach(sp => {
+            if (dept === sp.toLowerCase()) score += 3;
+            else if (dept.includes(sp.toLowerCase())) score += 1;
+          });
+          return { ...d, score };
+        }).filter(d => d.score > 0)
+          .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
+          .slice(0, 10);
+        if (!scored.length) {
+          appendMessage('bot', 'No matching doctors. You can still book a general checkup.');
+          showOptions(['Book Appointment', 'Symptom Checker', 'Main Menu']);
+          return;
+        }
+        renderDoctorButtons(scored);
+      })
+      .catch(() => {
+        appendMessage('bot', 'Failed to load doctors.');
+        showOptions(['Symptom Checker', 'Main Menu']);
+      });
+  }
+
+  function renderDoctorButtons(list) {
+    appendMessage('bot', 'Recommended doctors:');
+    chatOptions.innerHTML = list.map(d => {
+      const id = d.id || d.doctor_id;
+      const name = d.name || 'Doctor';
+      const dept = d.department_name || '';
+      return `<button class="chat-option-btn" data-action="select-doctor" data-doctor-id="${id}" data-doctor-name="${escapeHtml(name)}">${escapeHtml(name)}<br/><small>${escapeHtml(dept)}</small></button>`;
+    }).join('') + `<button class="chat-option-btn" data-action="option" data-value="Main Menu">Main Menu</button>`;
+  }
+
+  function inferSpecialties(symptoms) {
+    const tally = {};
+    symptoms.forEach(s => {
+      (SYMPTOM_TO_SPECIALTIES[s] || []).forEach(sp => {
+        tally[sp] = (tally[sp] || 0) + 1;
+      });
+    });
+    return Object.entries(tally).sort((a, b) => b[1] - a[1]).map(e => e[0]);
+  }
+
+  // Event listeners for chat options
+  chatOptions.addEventListener('click', e => {
+    const btn = e.target.closest('.chat-option-btn');
+    if (!btn) return;
+    const action = btn.dataset.action || '';
+    const value = (btn.dataset.value || '').toLowerCase();
+
+    if (action === 'symptom-category') {
+      loadCategorySymptoms(btn.dataset.catId);
+      return;
+    }
+    if (action === 'symptom-add') {
+      toggleSymptom(btn.dataset.symptom, btn);
+      return;
+    }
+    if (action === 'symptom-complete') {
+      finalizeSymptomsDynamic();
+      return;
+    }
+    if (action === 'select-doctor') {
+      selectDoctor(btn.dataset.doctorId, btn.dataset.doctorName);
+      return;
+    }
+    // Handle other actions...
+  });
+})();

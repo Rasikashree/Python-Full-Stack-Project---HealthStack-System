@@ -1,228 +1,528 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <!-- doccure/login.html  30 Nov 2019 04:12:20 GMT -->
-  <head>
+<head>
     <meta charset="utf-8" />
     <title>HealthStack</title>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
 
     <!-- Favicons -->
-    <link
-      type="image/x-icon"
-      href="{% static 'HealthStack-System/images/Normal/favicon.png' %}"
-      rel="icon"
-    />
+    <link type="image/x-icon" href="{% static 'HealthStack-System/images/Normal/favicon.png' %}" rel="icon" />
 
     <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}"
-    />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
 
     <!-- Fontawesome CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}"
-    />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}" />
 
     <!-- Main CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/css/Normal/style.css' %}"
-    />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/css/Normal/style.css' %}" />
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="assets/js/html5shiv.min.js"></script>
-      <script src="assets/js/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body class="account-page">
-    <!-- Main Wrapper -->
+    <style>
+        /* Body & Background */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-image: url('https://images.unsplash.com/photo-1623261742887-e23376d50b6c?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
 
-    <div class="main-wrapper">
-      <!-- Header -->
-      <header class="header">
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #004e92, #000428);
+            padding: 15px 30px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
 
-        {% include 'navbar_home.html' %}
-      </header>
-      <!-- /Header -->
+        .navbar .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #00d4ff !important;
+            letter-spacing: 1px;
+        }
 
-      <!-- Page Content -->
-      <div class="content">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-8 offset-md-2">
-              <!-- Login Tab Content -->
-              <div class="account-content">
-                <div class="row align-items-center justify-content-center">
-                  <div class="col-md-7 col-lg-6 login-left">
-                    <img
-                      src="{% static 'HealthStack-System/images/Normal/login-banner.png' %}"
-                      class="img-fluid"
-                      alt="HealthStack Login"
-                    />
-                  </div>
-                  <div class="col-md-12 col-lg-6 login-right">
-                    <div class="login-header">
-                      <h3>
-                        Login <span>Patient</span>
-                        <a href="{% url 'doctor-login' %}" style="text-decoration: none;">Are you a Doctor?</a>
-                      </h3>
-                    </div>
+        .navbar-nav .nav-link {
+            color: #fff !important;
+            margin: 0 12px;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
 
-                    <form method="POST" action="{% url 'login' %}">
-                      {% csrf_token %}
+        .navbar-nav .nav-link:hover {
+            color: #00d4ff !important;
+            transform: translateY(-2px);
+        }
 
-                      {% comment %} {% if messages %}
-                      
-                          {% for message in messages %}
-                          <div class="alert alert-danger alert-dismissible fade show" id="CredentialCheck" role="alert">
-                            <a href="#" class="alert-link"></a><a{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</a>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          {% endfor %}
-                      
-                      {% endif %} {% endcomment %}
+        .navbar-nav .active {
+            color: #ffcc00 !important;
+        }
 
-                      {% include 'message.html' %}
-                      
+        /* Section Overlay */
+        .section {
+            padding: 80px 20px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
 
+        .section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 0;
+        }
 
-                      <div class="form-floating mt-3 mb-3">
-                        <input type="text" class="form-control" name='username' id="floatingInput" placeholder="User Name">
-                        <label for="floatingInput">User Name</label>
-                      </div>
+        .section .container-fluid,
+        .section .container {
+            position: relative;
+            z-index: 1;
+        }
 
-                      <div class="form-floating mt-3 mb-3">
-                        <input type="password" class="form-control" name='password' id="myInput" placeholder="Password"> 
-                        <label for="floatingInput">Password</label>
+        .section-header h2,
+        .banner-header h1 {
+            font-weight: 700;
+            color: #00d4ff;
+        }
 
-                        <input type="checkbox" class="mt-2" onclick="myFunction11()">Show Password
-                        
-                      </div>
-                      
+        .section-header p,
+        .banner-header p {
+            font-size: 1.1rem;
+            color: #e6f9ff;
+        }
 
-                      <div class="text-right">
-                        <a
-                          class="forgot-link" style="text-decoration: none;"
-                          href="{% url 'reset-password' %}" style="text-decoration: none;"
-                          >Forgot Password ?</a
-                        >
-                      </div>
-                      <button
-                        class="btn btn-primary btn-block btn-lg login-btn"
-                        type="submit"
-                      >
-                        Login
-                      </button>
-                      <!-- <div class="login-or">
-                        <span class="or-line"></span>
-                        <span class="span-or">or</span>
-                      </div> -->
-                      <!-- <div class="row form-row social-login">
-                        <div class="col-6">
-                          <a href="#" class="btn btn-facebook btn-block"
-                            ><i class="fab fa-facebook-f mr-1"></i> Login</a
-                          >
-                        </div>
-                        <div class="col-6">
-                          <a href="#" class="btn btn-google btn-block"
-                            ><i class="fab fa-google mr-1"></i> Login</a
-                          >
-                        </div>
-                      </div> -->
-                      <div class="text-center dont-have">
-                        Don't have an account?
-                        <a href="{% url 'patient-register' %}" style="text-decoration: none;">Register</a>
-                        <br>
-                        <b>Want to login as 
-                        <a href="{% url 'admin-login' %}" style="color: skyblue;text-decoration: none;"> Admin? </a></b>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <!-- /Login Tab Content -->
-            </div>
-          </div>
-        </div>
+        /* Cards & Widgets */
+        .profile-widget,
+        .feature-item,
+        .speicality-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .profile-widget:hover,
+        .feature-item:hover,
+        .speicality-item:hover {
+            transform: translateY(-8px);
+        }
+
+        .feature-item img {
+            border-radius: 12px;
+            margin-bottom: 12px;
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        /* Banner */
+        .banner-header {
+            padding: 100px 20px 40px;
+        }
+
+        .banner-header h1 {
+            font-size: 3rem;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #000428, #004e92);
+            padding: 40px 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        footer p {
+            margin: 10px 0;
+            font-size: 0.95rem;
+            color: #ddd;
+        }
+
+        footer .social-icons a {
+            margin: 0 10px;
+            color: #00d4ff;
+            font-size: 1.4rem;
+            transition: 0.3s;
+        }
+
+        footer .social-icons a:hover {
+            color: #ffcc00;
+        }
+
+        /* Transparent Login Form */
+        .account-content .login-right {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            color: #fff;
+            max-width: 400px;      /* Limit max width */
+            margin: 50px auto;     /* Center horizontally with top margin */
+        }
+
+        @media (max-width: 768px) {
+            .account-content .login-right {
+                padding: 30px 20px;
+                max-width: 90%;
+            }
+        }
+
+        .account-content .login-header h3 {
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .account-content .login-header h3 span {
+            color: #fff;
+        }
+
+        /* Inputs */
+        .account-content .form-control {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #fff;
+        }
+
+        .account-content .form-control:focus {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            box-shadow: none;
+        }
+
+        .account-content .form-floating label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Gradient Button */
+        .book-btn-gradient {
+        display: inline-block;
+        padding: 14px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #fff;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(90deg, #007bff, #00c6ff, #0a74da);
+        background-size: 200% 200%;
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Hover Effect */
+        .book-btn-gradient:hover {
+        background-position: 200% 50%;
+        box-shadow: 0 0 20px rgba(0,198,255,0.8), 
+                    0 0 40px rgba(0,114,255,0.6);
+        transform: scale(1.05);
+        text-decoration: none;
+        }
+
+        /* Optional Glow Animation */
+        @keyframes rippleMove {
+        0%   { background-position: 0% 50%; }
+        100% { background-position: 200% 50%; }
+        }
+
+        /* Links */
+        .account-content a {
+            color: #00d4ff;
+            transition: 0.3s;
+        }
+
+        /* Popup Overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Popup Content */
+        .popup-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            color: #fff;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+
+        /* Close Button */
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .popup-close:hover {
+            color: #00d4ff;
+        }
+
+        /* Login Button in Navbar */
+        .navbar .login-btn {
+            background: transparent;
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            padding: 8px 20px;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        .navbar .login-btn:hover {
+            background: #00d4ff;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="account-page">
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+      <a class="navbar-brand" href="#"><i class="fas fa-stethoscope"></i> HealthStack</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active"><a class="nav-link" href="{% url 'hospital_home' %}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item">
+            <button class="login-btn" id="openLoginPopup">Login</button>
+          </li>
+        </ul>
       </div>
-      <!-- /Page Content -->
+    </nav>
+    <!-- /Header -->
 
-      <!-- Footer -->
-      {% include 'footer.html' %}
-      <!-- /Footer -->
+    <!-- Page Content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <!-- Login Tab Content -->
+                    <div class="account-content">
+                        <div class="login-right">
+                            <div class="login-header">
+                                <h3>Login <span>Patient</span></h3>
+                            </div>
+
+                            <form method="POST" action="{% url 'login' %}">
+                                {% csrf_token %}
+                                {% include 'message.html' %}
+
+                                <div class="form-floating mt-3 mb-3">
+                                    <input type="text" class="form-control" name='username' id="floatingInput" placeholder="User Name">
+                                    <label for="floatingInput">User Name</label>
+                                </div>
+
+                                <div class="form-floating mt-3 mb-3">
+                                    <input type="password" class="form-control" name='password' id="myInput" placeholder="Password">
+                                    <label for="floatingInput">Password</label>
+                                    <input type="checkbox" class="mt-2" onclick="myFunction11()"> Show Password
+                                </div>
+
+                                <div class="text-right">
+                                    <a class="forgot-link" style="text-decoration: none; color: #007bff; font-weight: bold;font-size: medium;" href="{% url 'reset-password' %}">Forgot Password ?</a>
+                                </div>
+
+                                <button class="book-btn-gradient btn-block btn-lg" type="submit">
+                                    Login
+                                </button>
+
+                                <div class="text-center dont-have mt-3" style="color: #fff;">
+                                    Don't have an account?
+                                    <a href="{% url 'patient-register' %}" style="text-decoration: none;color: #007bff; font-weight: bold; font-size: medium;">Register</a>
+                                    <br>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /Login Tab Content -->
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- /Main Wrapper -->
+    <!-- /Page Content -->
 
-    <!-- jQuery -->
-    <!-- jQuery -->
-    <!-- <script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script> -->
-    <!-- <script src="{% static 'HealthStack-System/js/jquery.min.js' %}"></script> -->
-    <script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script>
+    <!-- Footer -->
+    <footer id="contact">
+      <p>&copy; 2025 HealthStack. All Rights Reserved.</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+      <p>Contact us: support@healthstack.com | +91 94422 90033</p>
+    </footer>
+    <!-- /Footer -->
+</div>
+<!-- /Main Wrapper -->
 
+<!-- Popup Login Form -->
+<div class="popup-overlay" id="loginPopup">
+    <div class="popup-content">
+        <button class="popup-close" id="closeLoginPopup">&times;</button>
+        <div class="login-header">
+            <h3>Login <span>Patient</span></h3>
+        </div>
 
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            {% include 'message.html' %}
 
-    <!-- Bootstrap Core JS -->
-    <script src="{% static 'HealthStack-System/js/Normal/popper.min.js' %}"></script>
-    <script src="{% static 'HealthStack-System/js/Normal/bootstrap.min.js' %}"></script>
+            <div class="form-floating mt-3 mb-3">
+                <input type="text" class="form-control" name='username' id="popupFloatingInput" placeholder="User Name">
+                <label for="popupFloatingInput">User Name</label>
+            </div>
 
-    <!-- Custom JS -->
-    <!-- <script src="{% static 'HealthStack-System/js/Normal/script.js' %}"></script> -->
-    <script src="{% static 'HealthStack-System/Outside_assets/js/script.js' %}"></script>
+            <div class="form-floating mt-3 mb-3">
+                <input type="password" class="form-control" name='password' id="popupMyInput" placeholder="Password">
+                <label for="popupMyInput">Password</label>
+                <input type="checkbox" class="mt-2" onclick="popupMyFunction11()"> Show Password
+            </div>
 
+            <div class="text-right">
+                <a class="forgot-link" style="text-decoration: none; color: #007bff; font-weight: bold;font-size: medium;" href="{% url 'reset-password' %}">Forgot Password ?</a>
+            </div>
 
-    <script src="{% static 'HealthStack-System/js/Normal/Checkbox.js' %}"></script>
+            <button class="book-btn-gradient btn-block btn-lg" type="submit">
+                Login
+            </button>
 
+            <div class="text-center dont-have mt-3" style="color: #fff;">
+                Don't have an account?
+                <a href="{% url 'patient-register' %}" style="text-decoration: none;color: #007bff; font-weight: bold; font-size: medium;">Register</a>
+                <br>
+            </div>
+        </form>
+    </div>
+</div>
 
+<!-- jQuery -->
+<script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script>
 
-    <!-- alert js -->
-    {% comment %} <script>
-			var x = document.getElementById('CredentialCheck');
-			if (x.style.display === "none") {
-				x.style.display = "block";
-			}
-			$('#CredentialCheck').delay(4000).fadeOut('slow');     
-		</script>
-    {% endcomment %}
+<!-- Bootstrap Core JS -->
+<script src="{% static 'HealthStack-System/js/Normal/popper.min.js' %}"></script>
+<script src="{% static 'HealthStack-System/js/Normal/bootstrap.min.js' %}"></script>
 
-    <!-- and at the end:-->
-    {% if messages %}
-      <script>
-          {% for message in messages %}
-              $(document).ready(function () {
-                  $('.toast').toast('show');
-              });
-          {% endfor %}
-      </script>
-    {% endif %} 
+<!-- Custom JS -->
+<script src="{% static 'HealthStack-System/Outside_assets/js/script.js' %}"></script>
+<script src="{% static 'HealthStack-System/js/Normal/Checkbox.js' %}"></script>
 
-    <!-- show password js -->
-    <script>
-      function myFunction11() {
-      var x = document.getElementById('myInput');
-      if (x.type === "password") {
-        x.type = "text";
-      } else {
-        x.type = "password";
-      }
-      }
-    </script>
-
+<!-- Show Password JS -->
+<script>
+    function myFunction11() {
+        var x = document.getElementById('myInput');
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
     
-  </body>
+    function popupMyFunction11() {
+        var x = document.getElementById('popupMyInput');
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
 
-  <!-- doccure/login.html  30 Nov 2019 04:12:20 GMT -->
+<!-- Popup Login Form JS -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginPopup = document.getElementById('loginPopup');
+        const openLoginPopup = document.getElementById('openLoginPopup');
+        const closeLoginPopup = document.getElementById('closeLoginPopup');
+        
+        // Open popup
+        openLoginPopup.addEventListener('click', function() {
+            loginPopup.classList.add('active');
+        });
+        
+        // Close popup
+        closeLoginPopup.addEventListener('click', function() {
+            loginPopup.classList.remove('active');
+        });
+        
+        // Close popup when clicking outside
+        loginPopup.addEventListener('click', function(e) {
+            if (e.target === loginPopup) {
+                loginPopup.classList.remove('active');
+            }
+        });
+        
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                loginPopup.classList.remove('active');
+            }
+        });
+    });
+</script>
+
+<!-- Toast Message -->
+{% if messages %}
+<script>
+    {% for message in messages %}
+    $(document).ready(function () {
+        $('.toast').toast('show');
+    });
+    {% endfor %}
+</script>
+{% endif %}
+</body>
 </html>

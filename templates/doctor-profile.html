@@ -37,12 +37,13 @@
 			.zoom:hover {
 			  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 			}
+			
 		</style>
 	
 	</head>
 	<body>
 		<!-- Main Wrapper -->
-		<div class="main-wrapper">
+		<div class="main-wrapper" >
 		
 			<!-- Header -->
 			<header class="header">
@@ -60,7 +61,7 @@
 			<!-- /Header -->
 			
 			<!-- Breadcrumb -->
-			<div class="breadcrumb-bar">
+			<!-- <div class="breadcrumb-bar">
 				<div class="container-fluid">
 					<div class="row align-items-center">
 						<div class="col-md-12 col-12">
@@ -83,14 +84,14 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<!-- /Breadcrumb -->
 			
 			<!-- Page Content -->
 			<div class="content">
 				<div class="container-fluid">
+					<!-- <h3>Profile</h3> -->
 					<div class="row">
-
 						<div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
 							<!-- Profile Sidebar -->
 							<div>
@@ -107,7 +108,7 @@
 						</div>
 
 						<div class="col-md-7 col-lg-8 col-xl-9">
-
+							<h2 class="mb-4 text-center"><b>Profile</b></h2>
 							<!-- Doctor Widget -->
 							<div class="card">
 								<div class="card-body">
@@ -130,7 +131,7 @@
 													<span class="d-inline-block average-rating">(35)</span>
 												</div> {% endcomment %}
 												<div class="clinic-details">
-													<p class="doc-location"><i class="fas fa-map-marker-alt"></i> Dhaka,Bangladesh</p>
+													<!-- <p class="doc-location"><i class="fas fa-map-marker-alt"></i> Dhaka,Bangladesh</p> -->
 
 													<ul class="clinic-gallery">
 														<li>
@@ -167,8 +168,8 @@
 												<ul>
 													{% comment %} <li><i class="far fa-thumbs-up"></i> 99%</li>
 													<li><i class="far fa-comment"></i> 35 Feedback</li> {% endcomment %}
-													<li><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</li>
-													<li><i class="far fa-money-bill-alt"></i>{{doctor.consultation_fee}} BDT</li>
+													<!-- <li><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</li> -->
+													<li>Consultation Fee: ₹ {{doctor.consultation_fee}} INR</li>
 												</ul>
 											</div>
 											
@@ -197,12 +198,12 @@
 											<li class="nav-item">
 												<a class="nav-link active" href="#doc_overview" data-toggle="tab">Overview</a>
 											</li>
-											<li class="nav-item">
+											<!-- <li class="nav-item">
 												<a class="nav-link" href="#doc_certificate" data-toggle="tab">Certificate</a>
 											</li>
 											<li class="nav-item">
 												<a class="nav-link" href="#doc_reviews" data-toggle="tab">Reviews</a>
-											</li>
+											</li> -->
 											
 										</ul>
 									</nav>
@@ -304,7 +305,11 @@
 											<div class="row">
 
 												<div class="col-md-6 offset-md-3 zoom">
-													<img src="{{doctor.certificate_image.url}}" alt="logo" class="img-fluid">
+													{% if doctor.certificate_image %}
+													<img src="{{ doctor.certificate_image.url }}" alt="Certificate">
+												{% else %}
+													<span>No certificate uploaded.</span>
+												{% endif %}
 															
 												</div>
 												
@@ -435,7 +440,38 @@
 			<!-- /Page Content -->
    
 			<!-- Footer -->
-			{% include 'footer.html' %}
+		<footer id="contact">
+			<p>&copy; 2025 HealthStack. All Rights Reserved.</p>
+			<div class="social-icons">
+			<a href="#"><i class="fab fa-facebook-f"></i></a>
+			<a href="#"><i class="fab fa-twitter"></i></a>
+			<a href="#"><i class="fab fa-linkedin-in"></i></a>
+			<a href="#"><i class="fab fa-instagram"></i></a>
+			</div>
+			<p>Contact us: support@healthstack.com | +91 94422 90033</p>
+			<style>
+			footer {
+				background: linear-gradient(135deg, #000428, #004e92);
+				padding: 10px 20px;
+				text-align: center;
+				color: #fff;
+			}
+			footer p {
+				margin: 10px 0;
+				font-size: 0.95rem;
+				color: #ddd;
+			}
+			footer .social-icons a {
+				margin: 0 10px;
+				color: #00d4ff;
+				font-size: 1.4rem;
+				transition: 0.3s;
+			}
+			footer .social-icons a:hover {
+				color: #ffcc00;
+			}
+			</style>
+		</footer>
 			<!-- /Footer -->
 		   
 		</div>

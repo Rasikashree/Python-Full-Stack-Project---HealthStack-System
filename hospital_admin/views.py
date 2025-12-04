@@ -2,7 +2,7 @@ import email
 from email.mime import image
 from multiprocessing import context
 from unicodedata import name
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
@@ -19,6 +19,7 @@ from .forms import AdminUserCreationForm, LabWorkerCreationForm, EditHospitalFor
 
 from .models import Admin_Information,specialization,service,hospital_department, Clinical_Laboratory_Technician, Test_Information
 import random,re
+from hospital_admin import views
 import string
 from django.db.models import  Count
 from datetime import datetime
@@ -41,12 +42,23 @@ def admin_dashboard(request):
     if request.user.is_hospital_admin:
         user = Admin_Information.objects.get(user=request.user)
         total_patient_count = Patient.objects.annotate(count=Count('patient_id'))
-        total_doctor_count = Doctor_Information.objects.annotate(count=Count('doctor_id'))
+        # Only registered (Accepted) doctors should be counted
+        total_doctor_count = Doctor_Information.objects.filter(register_status='Accepted')
         total_pharmacist_count = Pharmacist.objects.annotate(count=Count('pharmacist_id'))
         total_hospital_count = Hospital_Information.objects.annotate(count=Count('hospital_id'))
         total_labworker_count = Clinical_Laboratory_Technician.objects.annotate(count=Count('technician_id'))
         pending_appointment = Appointment.objects.filter(appointment_status='pending').count()
-        doctors = Doctor_Information.objects.all()
+        doctors = (
+            Doctor_Information.objects
+            .filter(register_status='Accepted')
+            .select_related('hospital_name', 'department_name', 'specialization')
+            .only(
+                'name', 'featured_image',
+                'department_name__hospital_department_name',
+                'specialization__specialization_name',
+                'hospital_name__name'
+            )
+        )
         patients = Patient.objects.all()
         hospitals = Hospital_Information.objects.all()
         lab_workers = Clinical_Laboratory_Technician.objects.all()
@@ -829,7 +841,22 @@ def department_image_list(request,pk):
 def register_doctor_list(request):
     if request.user.is_hospital_admin:
         user = Admin_Information.objects.get(user=request.user)
-        doctors = Doctor_Information.objects.filter(register_status='Accepted')
+        doctors_qs = (
+            Doctor_Information.objects
+            .filter(register_status='Accepted')
+            .select_related('hospital_name', 'department_name', 'specialization', 'user')
+            .only(
+                'name', 'email', 'featured_image',
+                'hospital_name__name',
+                'department_name__hospital_department_name',
+                'specialization__specialization_name',
+                'user__email'
+            )
+        )
+        from django.core.paginator import Paginator
+        page_number = request.GET.get('page', 1)
+        paginator = Paginator(doctors_qs, 25)
+        doctors = paginator.get_page(page_number)
     return render(request, 'hospital_admin/register-doctor-list.html', {'doctors': doctors, 'admin': user})
 
 @csrf_exempt
@@ -837,7 +864,22 @@ def register_doctor_list(request):
 def pending_doctor_list(request):
     if request.user.is_hospital_admin:
         user = Admin_Information.objects.get(user=request.user)
-    doctors = Doctor_Information.objects.filter(register_status='Pending')
+    doctors_qs = (
+        Doctor_Information.objects
+        .filter(register_status='Pending')
+        .select_related('hospital_name', 'department_name', 'specialization', 'user')
+        .only(
+            'name', 'email', 'phone_number', 'featured_image',
+            'hospital_name__name',
+            'department_name__hospital_department_name',
+            'specialization__specialization_name',
+            'user__email'
+        )
+    )
+    from django.core.paginator import Paginator
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(doctors_qs, 25)
+    doctors = paginator.get_page(page_number)
     return render(request, 'hospital_admin/Pending-doctor-list.html', {'all': doctors, 'admin': user})
 
 @csrf_exempt
@@ -865,7 +907,10 @@ def accept_doctor(request,pk):
     # Mailtrap
     doctor_name = doctor.name
     doctor_email = doctor.email
-    doctor_department = doctor.department_name.hospital_department_name
+    if doctor.department_name:
+        doctor_department = doctor.department_name.hospital_department_name
+    else:
+        doctor_department = "Not Assigned"
 
     doctor_specialization = doctor.specialization.specialization_name
 
@@ -901,9 +946,17 @@ def reject_doctor(request,pk):
     # Mailtrap
     doctor_name = doctor.name
     doctor_email = doctor.email
-    doctor_department = doctor.department_name.hospital_department_name
-    doctor_hospital = doctor.hospital_name.name
-    doctor_specialization = doctor.specialization.specialization_name
+    doctor_department = (
+        doctor.department_name.hospital_department_name
+        if doctor.department_name else 'N/A'
+    )
+    doctor_hospital = (
+        doctor.hospital_name.name if doctor.hospital_name else 'N/A'
+    )
+    doctor_specialization = (
+        doctor.specialization.specialization_name
+        if doctor.specialization else 'N/A'
+    )
 
     subject = "Rejection of Doctor Registration"
 
@@ -1061,4 +1114,11 @@ def report_history(request):
             report = Report.objects.all()
             context = {'report':report,'lab_workers':lab_workers}
             return render(request, 'hospital_admin/report-list.html',context)
+
+@csrf_exempt
+@login_required(login_url="login")
+def delete_doctor(request, doctor_id):
+    doctor = get_object_or_404(Doctor_Information, pk=doctor_id)
+    doctor.delete()
+    return redirect('register-doctor-list')  # Change to your doctor list URL name
 

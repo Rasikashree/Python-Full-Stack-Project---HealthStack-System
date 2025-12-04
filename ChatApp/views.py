@@ -18,6 +18,17 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
+def _pick_primary_doctor(user_id):
+    """Return a single Doctor_Information for a user.
+    Prefer register_status='Accepted'; else return most recent.
+    """
+    qs = Doctor_Information.objects.filter(user_id=user_id)
+    if not qs.exists():
+        return None
+    doc = qs.filter(register_status='Accepted').order_by('-doctor_id').first()
+    return doc or qs.order_by('-doctor_id').first()
+
+
 @csrf_exempt
 @login_required(login_url='login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -35,7 +46,7 @@ def home(request,pk):
                 # chats = chatMessages.objects.filter(Q(user_from=request.user.id & user_to=request.GET['u']) | Q(user_from=request.GET['u'] & user_to=request.user.id))
                 chats = chatMessages.objects.filter(Q(user_from=request.user.id, user_to=request.GET['u']) | Q(user_from=request.GET['u'], user_to=request.user.id))
                 chats = chats.order_by('date_created')
-                doc = Doctor_Information.objects.get(user_id=request.GET['u'])
+                doc = _pick_primary_doctor(request.GET['u'])
                 
                 context = {
                 "page":"home",
@@ -81,7 +92,7 @@ def home(request,pk):
             User = get_user_model()
             users = User.objects.all()
             #patients = Patient.objects.all()
-            doctor = Doctor_Information.objects.get(user_id=pk)
+            doctor = _pick_primary_doctor(pk)
             appointments = Appointment.objects.filter(doctor=doctor).filter(appointment_status='confirmed')
             patients= Patient.objects.filter(appointment__in=appointments)
 

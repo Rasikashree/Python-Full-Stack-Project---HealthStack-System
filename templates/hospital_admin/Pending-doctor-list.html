@@ -78,12 +78,24 @@
                         <div class="appointment-list">
                             <div class="profile-info-widget">
                                 <a href="{%url 'admin-doctor-profile' pk=doctor.doctor_id%}" class="booking-doc-img">
-                                    <img src="{{doctor.featured_image.url}}" alt="User Image">
+                                    {% if doctor.featured_image and doctor.featured_image.name and doctor.featured_image.name != 'doctors/user-default.png' %}
+                                        <img src="{{ doctor.featured_image.url }}" alt="Doctor Image">
+                                    {% else %}
+                                        <img src="{% static 'HealthStack-System/images/Normal/doctors/user-default.png' %}" alt="Doctor Image">
+                                    {% endif %}
                                 </a>
                                 <div class="profile-det-info" style="padding-left:8px">
                                     <h3><a href="{%url 'admin-doctor-profile' pk=doctor.doctor_id%}">{{doctor.name}}</a></h3>
                                     <div class="patient-details">
-                                        <h5 style="color: #757575;font-size: 18px;font-weight: normal;margin-bottom: 8px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><i class="fas fa-envelope"></i> {{doctor.email}}</h5>
+                                        <h5 style="color: #757575;font-size: 18px;font-weight: normal;margin-bottom: 8px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><i class="fas fa-envelope"></i> 
+                                            {% if doctor.email %}
+                                                {{ doctor.email }}
+                                            {% elif doctor.user and doctor.user.email %}
+                                                {{ doctor.user.email }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </h5>
                                         <h5 style="color: #757575;font-size: 18px;font-weight: normal;margin-bottom: 8px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><i class="fas fa-phone"></i> {{doctor.phone_number}}</h5>
                                         <h5 style="color: #757575;font-size: 18px;font-weight: normal;margin-bottom: 8px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><i class="fas fa-brain"></i><span style="color:black"><b> Department:</b></span> {{doctor.department_name}}</h5>
                                         <h5 style="color: #757575;font-size: 18px;font-weight: normal;margin-bottom: 8px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"><i class="fas fa-user-md"></i><span style="color:black"><b> Specialization:</b></span> {{doctor.specialization}}</h5>

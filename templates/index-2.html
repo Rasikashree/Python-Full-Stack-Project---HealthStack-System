@@ -1,329 +1,1971 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <!-- doccure/index.html  30 Nov 2019 04:12:03 GMT -->
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=0"
-    />
-    <title>HealthStack</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
+  <title>HealthStack</title>
 
-    <!-- Favicons -->
-    <link
-      type="image/x-icon"
-      href="{% static 'HealthStack-System/images/Normal/favicon.png' %}"
-      rel="icon"
-    />
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="{% static 'HealthStack-System/images/Normal/favicon.png' %}" />
 
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}"
-    />
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}" />
 
-    <!-- Fontawesome CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}"
-    />
+  <!-- Fontawesome -->
+  <link rel="stylesheet" href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  
+  <!-- Custom Styling -->
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      color: #fff;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background-attachment: fixed;
+    }
 
-    <!-- Main CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/css/Normal/style.css' %}"
-    />
+    /* Navbar */
+    .navbar {
+      background: linear-gradient(90deg,#004e92 , #000428);
+      padding: 15px 30px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .navbar .navbar-brand {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #00d4ff !important;
+      letter-spacing: 1px;
+    }
+    .navbar-nav .nav-link {
+      color: #fff !important;
+      margin: 0 12px;
+      transition: 0.3s;
+      font-size: 1rem;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #00d4ff !important;
+      transform: translateY(-2px);
+    }
+    .navbar-nav .active {
+      color: #ffcc00 !important;
+    }
+    #About, #hospitals {
+      scroll-margin-top: 100px; /* equal to navbar height */
+    }
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="assets/js/html5shiv.min.js"></script>
-      <script src="assets/js/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <!-- Main Wrapper -->
-    <div class="main-wrapper">
-      <!-- Header -->
-      <header class="header">{% include 'navbar_home.html' %}</header>
-      <!-- header -->
+    .section {
+      padding: 80px 20px;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+    .section::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 0;
+    }
+    .section .container-fluid, 
+    .section .container {
+      position: relative;
+      z-index: 1;
+    }
 
-      <!-- Home Banner -->
-      <section class="section section-search" style="background-color:rgb(172, 209, 242); padding-bottom: 0px;min-height: 0px;padding-left: 0px;padding-right: 0px;">
-        <div  style="background-color:rgb(172, 209, 242)">
-          <div class="banner-wrapper" style="background-color:rgb(172, 209, 242);padding-bottom: 20px;padding-top: 12px;"> 
-            <div class="banner-header text-center">
-              <h1>Welcome To HealthStack</h1>
-              <p>
-                Choose well by choosing us.
-              </p>
-            </div>
+    .section-header h2, .banner-header h1 {
+      font-weight: 700;
+      color: #00d4ff;
+    }
+    .section-header p, .banner-header p {
+      font-size: 1.1rem;
+      color: #e6f9ff;
+    }
 
-           
-            <!-- /Search -->
-          </div>
-          <div class="home-image">
-            <img
-              src="{% static 'HealthStack-System/images/Normal/p2.png' %}"
-              class="img-fluid" style="width: 100%;"
-            />
-          </div>
-        </div>
-      </section>
-      <!-- /Home Banner -->
+    .profile-widget, .feature-item, .speicality-item {
+      background: rgba(255,255,255,0.08);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+      transition: transform 0.3s;
+    }
+    .profile-widget:hover, .feature-item:hover, .speicality-item:hover {
+      transform: translateY(-8px);
+    }
 
-      <!-- Clinic and Specialities -->
-      <section class="section section-specialities" style="padding-top: 80px">
-        <div class="container-fluid">
-          <div class="section-header text-center">
-            <h2>Clinic and Specialities</h2>
-            <p class="sub-title">
+    .feature-item img {
+      border-radius: 12px;
+      margin-bottom: 12px;
+      height: 180px;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    .banner-section {
+      position: relative;
+      min-height: 600px;             /* full screen height */
+      display: flex;
+      align-items: center;           /* vertically center text */
+      justify-content: flex-start;   /* push content to the left */
+      background-size: cover;
+      background-position: center;
+    }
+
+    .banner-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 1;
+    }
+
+    .banner-header {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin-left: 50px;
+      text-align: left;
+    }
+    
+    /* Button */
+    .book-btn-gradient {
+      background: linear-gradient(90deg, #007bff, #00c6ff);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.4s;
+      box-shadow: 0 4px 10px rgba(0,123,255,0.4);
+      border: none;
+      cursor: pointer;
+    }
+    .book-btn-gradient:hover {
+      background: linear-gradient(90deg, #00c6ff, #007bff);
+      box-shadow: 0 0 20px rgba(0,198,255,0.8), 0 0 40px rgba(0,114,255,0.6);
+      transform: scale(1.05);
+    }
+
+    /* Title Glow Animation */
+    @keyframes textGlow {
+      from { text-shadow: 0 0 15px rgba(0,198,255,0.7), 0 0 30px rgba(0,114,255,0.5); }
+      to { text-shadow: 0 0 30px rgba(0,255,204,0.9), 0 0 60px rgba(0,255,204,0.6); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .banner-title {
+        font-size: 2.2rem;
+      }
+      .banner-subtitle {
+        font-size: 1.2rem;
+      }
+      .banner-tagline {
+        font-size: 1rem;
+      }
+    }
+
+    .book-btn-gradient {
+      display: inline-block;
+      padding: 14px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #001f54, #0a74da, #c0c0c0);
+      background-size: 200% 200%;
+      transition: all 0.4s ease;
+    }
+
+    .book-btn-gradient:hover {
+      animation: rippleMove 2s linear infinite;
+      text-decoration: none;
+    }
+
+    @keyframes rippleMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    
+    /*Available hospitals*/
+    /* container styling */
+    #hospitals { padding: 48px 0; background-image: url('https://images.unsplash.com/photo-1576765607924-bc8b1a3c019b'); background-size: cover; background-position: center; }
+
+    .section-header h2 { color: #eaf6ff; }
+    .section-header p { color: #d8eefc; }
+
+    /* Swiper slide card */
+    .hospital-slide-card {
+      width: 320px;                    /* default width per slide */
+      min-height: 375px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: linear-gradient(180deg,#031a3b 0%, #013056 60%, #0b4f86 100%);
+      color: #fff;
+      padding: 16px;
+      box-shadow: 0 8px 18px rgba(3,26,59,0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hospital-slide-card img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+    }
+
+    .hospital-slide-card h4 {
+      margin: 6px 0;
+      min-height: 45px;
+      font-size: 1.05rem;
+      color: #e8f7ff;
+      font-weight: 700;
+    }
+
+    .hospital-slide-card p {
+      font-size: 0.92rem;
+      color: #cfefff;
+      min-height: 60px; 
+      flex-grow: 1;  
+      margin: 6px 0 0;
+      line-height: 1.25;
+      align-items: center;
+    }
+
+    .hospital-slide-card a {
+      display:inline-block;
+      margin-top:8px;
+      font-weight:600;
+      color:#dbeeff;
+      text-decoration:none;
+      font-size:0.9rem;
+    }
+
+    /* make swiper container spacing */
+    .hospital-swiper { padding: 8px 0 6px; }
+    .swiper-wrapper { align-items: center; }
+
+    /* smaller screens tweak */
+    @media (max-width: 575px) {
+      .hospital-slide-card { width: 260px; padding: 12px; }
+      .hospital-slide-card img { height: 150px; }
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #000428, #004e92);
+      padding: 40px 20px;
+      text-align: center;
+      color: #fff;
+    }
+    footer p {
+      margin: 10px 0;
+      font-size: 0.95rem;
+      color: #ddd;
+    }
+    footer .social-icons a {
+      margin: 0 10px;
+      color: #00d4ff;
+      font-size: 1.4rem;
+      transition: 0.3s;
+    }
+    footer .social-icons a:hover {
+      color: #ffcc00;
+    }
+
+    /* Popup Login Form Styles */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .popup-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup-content {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      color: #fff;
+      width: 90%;
+      max-width: 400px;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .popup-overlay.active .popup-content {
+      transform: scale(1);
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .popup-close:hover {
+      color: #00d4ff;
+    }
+
+    .popup-content .form-control {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #fff;
+    }
+
+    .popup-content .form-control:focus {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      box-shadow: none;
+    }
+
+    .popup-content .form-floating label {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .popup-content a {
+      color: #00d4ff;
+      transition: 0.3s;
+    }
+
+    .popup-content a:hover {
+      color: #0284c7;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="main-wrapper">
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+      <a class="navbar-brand" href="#"><i class="fas fa-stethoscope"></i> HealthStack</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active"><a class="nav-link" href="#">Home</a></li>
+          <li class="nav-item active"><a class="nav-link" href="#About">About us</a></li>
+          <li class="nav-item"><a class="nav-link" href="#specialities">Specialities</a></li>
+          <li class="nav-item"><a class="nav-link" href="#hospitals">Hospitals</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" id="openDoctorLoginPopup">Doctor Login</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="hospital_admin\login.html">Admin Login</a></li> -->
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Banner -->
+    <section class="banner-section" style="background-image: url('https://plus.unsplash.com/premium_photo-1681843129112-f7d11a2f17e3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0');">
+      <div class="banner-overlay"></div>
+      <div class="banner-header">
+        <h1 class="banner-title">Welcome To <span>HealthStack</span></h1>
+        <p class="banner-tagline">HealthStack connects you to trusted hospitals and doctors,<br> making healthcare simple and stress-free.</p>
+        <p class="banner-tagline" style="font-weight: bold;">"Your health, your choice - we just make it simpler."</p>
+        <a href="#hospitals" class="book-btn-gradient mt-3">Find Hospitals</a>
+      </div>
+    </section>
+
+    <!-- About-us -->
+    <section class="about-us-section" id="About">
+      <div class="container py-5">
+        <div class="row align-items-center">
+          <!-- Left Column: Text -->
+          <div class="col-lg-6 mb-4">
+            <h2 class="section-title">About Us</h2>
+            <p class="about-text">
+              Welcome to <strong>HealthStack</strong>, your trusted platform for seamless hospital appointments 
+              and healthcare services. Our mission is to simplify access to quality healthcare by connecting 
+              you with multiple hospitals and clinics, all in one place.
+            </p>
+            <p class="about-text">
+              We understand that finding the right healthcare provider can be time-consuming and stressful. 
+              That's why we've created an easy-to-use platform that allows you to 
+              <strong>search, compare, and book appointments</strong> with top hospitals and specialists near you, 
+              anytime and anywhere.
+            </p>
+            <p class="about-text">
+              At <strong>HealthStack</strong>, we are committed to 
+              <strong>making healthcare more convenient, transparent, and efficient</strong>. 
+              Your health is our priority, and we strive to provide you with the best possible care 
+              at your fingertips.
+            </p>
+            <p class="highlight-text text-center">
+              <strong>Your Health, Your Choice - Book with Confidence!</strong>
             </p>
           </div>
-          <div class="row justify-content-center">
-            <div class="col-md-9">
-              <!-- Slider -->
-              <div class="specialities-slider slider">
-                <!-- Slider Item -->
-                <div class="speicality-item text-center">
-                  <div class="speicality-img">
-                    <img
-                      src="{% static 'HealthStack-System/images/Normal/specialities/specialities-01.png' %}"
-                      class="img-fluid"
-                      alt="Speciality"
-                    />
-                    <span><i class="fa fa-circle" aria-hidden="true"></i></span>
-                  </div>
-                  <p>Urology</p>
-                </div>
-                <!-- /Slider Item -->
 
-                <!-- Slider Item -->
-                <div class="speicality-item text-center">
-                  <div class="speicality-img">
-                    <img
-                      src="{% static 'HealthStack-System/images/Normal/specialities/specialities-02.png' %}"
-                      class="img-fluid"
-                      alt="Speciality"
-                    />
-                    <span><i class="fa fa-circle" aria-hidden="true"></i></span>
-                  </div>
-                  <p>Neurology</p>
+          <!-- Right Column: Animated Glass Cards -->
+          <div class="col-lg-6">
+            <div class="row g-4 justify-content-center">
+              <!-- Card 1 -->
+              <div class="col-md-6">
+                <div class="about-card">
+                  <div class="icon"><i class="fas fa-hospital"></i></div>
+                  <h5>Multiple Hospital Options</h5>
+                  <p>Access a wide network of hospitals and clinics across various specialties.</p>
                 </div>
-                <!-- /Slider Item -->
-
-                <!-- Slider Item -->
-                <div class="speicality-item text-center">
-                  <div class="speicality-img">
-                    <img
-                      src="{% static 'HealthStack-System/images/Normal/specialities/specialities-03.png' %}"
-                      class="img-fluid"
-                      alt="Speciality"
-                    />
-                    <span><i class="fa fa-circle" aria-hidden="true"></i></span>
-                  </div>
-                  <p>Orthopedic</p>
-                </div>
-                <!-- /Slider Item -->
-
-                <!-- Slider Item -->
-                <div class="speicality-item text-center">
-                  <div class="speicality-img">
-                    <img
-                      src="{% static 'HealthStack-System/images/Normal/specialities/specialities-04.png' %}"
-                      class="img-fluid"
-                      alt="Speciality"
-                    />
-                    <span><i class="fa fa-circle" aria-hidden="true"></i></span>
-                  </div>
-                  <p>Cardiologist</p>
-                </div>
-                <!-- /Slider Item -->
-
-                <!-- Slider Item -->
-                <div class="speicality-item text-center">
-                  <div class="speicality-img">
-                    <img
-                      src="{% static 'HealthStack-System/images/Normal/specialities/specialities-05.png' %}"
-                      class="img-fluid"
-                      alt="Speciality"
-                    />
-                    <span><i class="fa fa-circle" aria-hidden="true"></i></span>
-                  </div>
-                  <p>Dentist</p>
-                </div>
-                <!-- /Slider Item -->
               </div>
-              <!-- /Slider -->
-            </div>
-          </div>
-        </div>
-      </section>
-      <!-- Clinic and Specialities -->
 
-      <!-- Popular Section -->
-      <section class="section section-doctor">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-4">
-              <div class="section-header">
-                <h2>Book Our Doctor</h2>
-                <p>From the Best</p>
-              </div>
-              <div class="about-content">
-                <p>
-                  You can book doctors from any hospital from here.
-                </p>
-                <!-- <p>
-                  web page editors now use Lorem Ipsum as their default model
-                  text, and a search for 'lorem ipsum' will uncover many web
-                  sites still in their infancy. Various versions have evolved
-                  over the years, sometimes
-                </p> -->
-                <!-- <a href="javascript:;">Read More..</a> -->
-              </div>
-            </div>
-
-
-            <div class="col-lg-8">
-              <div class="doctor-slider slider">
-
-                {% for doctor in doctors %}
-                <!-- Doctor Widget -->
-                <div class="profile-widget">
-                  <div class="doc-img">
-                    <a href="#">
-                      <img
-                        class="img-fluid"
-                        alt="User Image"
-                        src="{{ doctor.featured_image.url }}"
-                      />
-                    </a>
-                    <a href="javascript:void(0)" class="fav-btn">
-                      <i class="far fa-bookmark"></i>
-                    </a>
-                  </div>
-                  <div class="pro-content">
-                    <h3 class="title">
-                      <a href="doctor-profile.html">{{doctor.name}}</a>
-                      <i class="fas fa-check-circle verified"></i>
-                    </h3>
-                    <p class="speciality">
-                      {{ doctor.department_name.hospital_department_name }}
-                    </p>
-                    {% comment %} <div class="rating">
-                      <i class="fas fa-star filled"></i>
-                      <i class="fas fa-star filled"></i>
-                      <i class="fas fa-star filled"></i>
-                      <i class="fas fa-star filled"></i>
-                      <i class="fas fa-star filled"></i>
-                      <span class="d-inline-block average-rating">(17)</span>
-                    </div> {% endcomment %}
-                    <ul class="available-info">
-                      <li>
-                        <i class="fas fa-map-marker-alt"></i> {{doctor.hospital_name}}
-                      </li>
-                      <li>
-                        <i class="far fa-clock"></i> {{ doctor.visiting_hour }}
-                      </li>
-                      <li>
-                        <i class="far fa-money-bill-alt"></i> Consulation fee: {{ doctor.consultation_fee }} BDT
-                        <i
-                          class="fas fa-info-circle"
-                          data-toggle="tooltip"
-                          title="Lorem Ipsum"
-                        ></i>
-                      </li>
-                    </ul>
-                    
-                  </div>
+              <!-- Card 2 -->
+              <div class="col-md-6">
+                <div class="about-card">
+                  <div class="icon"><i class="fas fa-calendar-check"></i></div>
+                  <h5>Instant Booking</h5>
+                  <p>Schedule appointments online without the hassle of long waiting times.</p>
                 </div>
-                <!-- /Doctor Widget -->
-                {% endfor %}
-
-
-               
               </div>
-            </div>
 
-          </div>
-        </div>
-      </section>
-      <!-- /Popular Section -->
-
-      <!-- Availabe Features -->
-      <section class="section section-features">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-5 features-img">
-              <img
-                src="{% static 'HealthStack-System/images/Normal/pppp.jpg' %}"
-                class="img-fluid"
-                alt="Feature"
-              />
-            </div>
-            <div class="col-md-7">
-              <div class="section-header">
-                <h2 class="mt-2">Availabe Hospitals</h2>
-                <p>
-                  Here You can access multiple hospitals. You can book your appointment from
-                  your doctor & can collect all hospital infromations from here.
-                </p>
-              </div>
-              <div class="features-slider slider">
-                <!-- Slider Item -->
-                {% for hospital in hospitals %}
-                <div class="feature-item text-center">
-                  <img
-                    src="{{ hospital.featured_image.url }}"
-                    class="img-fluid"
-                    alt="Feature"
-                  />
-                  <p>{{hospital.name}}</p>
+              <!-- Card 3 -->
+              <div class="col-md-6">
+                <div class="about-card">
+                  <div class="icon"><i class="fas fa-user-md"></i></div>
+                  <h5>Verified Providers</h5>
+                  <p>We ensure all hospitals and doctors listed are trusted and verified.</p>
                 </div>
-                {% endfor %}
-                <!-- /Slider Item -->
+              </div>
 
-                
+              <!-- Card 4 -->
+              <div class="col-md-6">
+                <div class="about-card">
+                  <div class="icon"><i class="fas fa-laptop-medical"></i></div>
+                  <h5>User-Friendly Experience</h5>
+                  <p>Navigate our platform effortlessly, making healthcare accessible to everyone.</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-      <!-- Availabe Features -->
+      </div>
 
-      <!-- Footer -->
-      {% include 'footer.html' %}
-      <!-- /Footer -->
+      <!-- CSS -->
+      <style>
+        /* Background */
+        .about-us-section {
+          background: linear-gradient(180deg, #ffffff 0%, #f4f9ff 100%);
+          padding: 70px 0;
+        }
+
+        /* Title */
+        .section-title {
+          font-size: 36px;
+          font-weight: 700;
+          color: #0056b3;
+          margin-bottom: 25px;
+          position: relative;
+        }
+        .section-title::after {
+          content: "";
+          width: 70px;
+          height: 4px;
+          background: linear-gradient(90deg, #007bff, #00c6ff);
+          display: block;
+          margin-top: 10px;
+          border-radius: 2px;
+        }
+
+        /* Paragraphs */
+        .about-text {
+          font-size: 16px;
+          line-height: 1.8;
+          color: #333;
+          margin-bottom: 15px;
+          text-align: justify;
+        }
+
+        .highlight-text {
+          font-size: 18px;
+          color: #007bff;
+          font-weight: bold;
+        }
+
+        /* Glass Cards */
+        .row.g-4 > .col-md-6 {
+          display: flex;
+        }
+        .about-card {
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(12px);
+          border-radius: 15px;
+          padding: 30px 20px;
+          text-align: center;
+          border: 1px solid rgba(0, 123, 255, 0.2);
+          box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+          transition: all 0.4s ease;
+          position: relative;
+          overflow: hidden;
+          height: 270px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+        }
+
+        .about-card h5 {
+          font-size: 18px;
+          font-weight: 600;
+          margin: 15px 0 10px;
+          color: #0056b3;
+        }
+
+        .about-card p {
+          font-size: 14px;
+          color: #444;
+          text-align: center;
+        }
+
+        /* Icon Style */
+        .about-card .icon {
+          width: 60px;
+          height: 50px;
+          margin: 0 auto 10px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #007bff, #00c6ff);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-size: 24px;
+          box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+          animation: pulse 2s infinite;
+        }
+
+        /* Hover Effect */
+        .about-card:hover {
+          transform: translateY(-10px) scale(1.02);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        /* Icon Pulse Animation */
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+        }
+      </style>
+    </section>
+
+    <!-- Clinic & Specialities -->
+    <section id="specialities" class="section section-specialities" style="background-image: url('https://images.unsplash.com/photo-1587351021744-63d12e8a34e9');">
+      <div class="container-fluid text-center">
+        <div class="section-header">
+          <h2>Clinic and Specialities</h2>
+          <p>Explore our wide range of healthcare services and expertise.</p>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-3">
+            <div class="speicality-item">
+              <i class="fas fa-heartbeat"></i>
+              <h5>Cardiology</h5>
+              <p>Expert care for your heart and circulatory system.</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="speicality-item">
+              <i class="fas fa-brain"></i>
+              <h5>Neurology</h5>
+              <p>Comprehensive treatments for brain and nervous system.</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="speicality-item">
+              <i class="fas fa-bone"></i>
+              <h5>Orthopedics</h5>
+              <p>Advanced orthopedic treatments and surgeries.</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="speicality-item">
+              <i class="fas fa-child"></i>
+              <h5>Pediatrics</h5>
+              <p>Specialized care for infants, children, and teens.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Doctors -->
+    <section id="doctors" class="section section-doctor" style="background-image: url('https://images.unsplash.com/photo-1580281657521-84e3b9a5baf6');">
+      <div class="container text-center">
+          <h2>Book Our Doctor</h2>
+          <p>From the Best. You can book doctors from any hospital from here.</p>
+          <button class="book-btn-gradient" id="bookAppointmentBtn">Book Appointment</button>
+      </div>
+    </section>
+
+    <!-- Hospitals -->
+    <section id="hospitals" style="background-color: white;">
+      <div class="container">
+        <div class="section-header text-center mb-4">
+          <h2 style="color: #0056b3;">Available Hospitals</h2>
+          <p style="color: #0056b3;">Top private hospitals in Salem (Ladies, Child & Multi-speciality)</p>
+        </div>
+
+        <!-- Swiper -->
+        <div class="swiper hospital-swiper">
+          <div class="swiper-wrapper">
+            <!-- Slide 1 -->
+            <div class="swiper-slide">
+              <div class="hospital-slide-card">
+                <img src="static\images\hospitals\manipal.png" alt="Manipal Hospital, Salem">
+                <h4>Manipal Hospital, Salem</h4>
+                <p>Private tertiary-care hospital with super-speciality facilities and advanced diagnostics.</p>
+                <a href="https://www.manipalhospitals.com" target="_blank" rel="noopener">Visit Website</a>
+              </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="swiper-slide">
+              <div class="hospital-slide-card">
+                <img src="static\images\hospitals\shanmuga.jpg" alt="Shanmuga Hospital">
+                <h4>Shanmuga Hospital</h4>
+                <p>Multi-speciality hospital with oncology, surgery and accredited labs.</p>
+                <a href="https://www.shanmugahospital.com" target="_blank" rel="noopener">Visit Website</a>
+              </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="swiper-slide">
+              <div class="hospital-slide-card">
+                <img src="static\images\hospitals\dharan.jpeg" alt="Dharan Hospital">
+                <h4>Dharan Hospital</h4>
+                <p>Large multispeciality hospital (~300+ beds) offering modern services and equipment.</p>
+                <a href="https://www.dharanhospital.com" target="_blank" rel="noopener">Visit Website</a>
+              </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="swiper-slide">
+              <div class="hospital-slide-card">
+                <img src="static\images\hospitals\saravana.jpeg" alt="Saravana Hospital">
+                <h4>Saravana Hospital</h4>
+                <p>Leading multi-speciality integrated care centre in Salem with professional staff.</p>
+                <a href="https://www.salemsaravanahospital.com" target="_blank" rel="noopener">Visit Website</a>
+              </div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="swiper-slide">
+              <div class="hospital-slide-card">
+                <img src="static\images\hospitals\kavery.jpg" alt="Kauvery Hospital">
+                <h4>Kauvery Hospital, Salem</h4>
+                <p>Part of the Kauvery chain - reputed multi-speciality services and care.</p>
+                <a href="https://www.kauveryhospital.com" target="_blank" rel="noopener">Visit Website</a>
+              </div>
+            </div>
+
+            <!-- Slide 6 -->
+            <div class="swiper-slide">
+              <div class="hospital-slide-card">
+                <img src="static\images\hospitals\sks.jpg" alt="SKS Hospital">
+                <h4>SKS Hospital</h4>
+                <p>Well-established multi-speciality hospital with comprehensive emergency services.</p>
+                <a href="https://www.skshospital.org" target="_blank" rel="noopener">Visit Website</a>
+              </div>
+            </div>
+
+            <!-- Slide 7 -->
+            <div class="swiper-slide">
+              <div class="hospital-slide-card">
+                <img src="static\images\hospitals\sims.jpg" alt="SIMS Chellum Hospital">
+                <h4>SIMS Chellum Hospital</h4>
+                <p>Private hospital known locally for multiple specialties and reliable care.</p>
+                <a href="https://www.myhospitalnow.com" target="_blank" rel="noopener">Visit Website</a>
+              </div>
+            </div>
+
+            <!-- Slide 8 -->
+            <div class="swiper-slide">
+              <div class="hospital-slide-card">
+                <img src="static\images\hospitals\salem.png" alt="Salem Polyclinic Hospital">
+                <h4>Salem Polyclinic (K N Rao Hospital)</h4>
+                <p>Reputed multi-speciality hospital with a long track record in Salem.</p>
+                <a href="https://www.myhospitalnow.com" target="_blank" rel="noopener">Visit Website</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+      <p>&copy; 2025 HealthStack. All Rights Reserved.</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+      <p>Contact us: support@healthstack.com | +91 94422 90033</p>
+    </footer>
+  </div>
+
+
+
+  <!-- Start - Patient Login, Register and Forgot password popup form & JS -->
+  <!-- Popup Login Form -->
+  <div class="popup-overlay" id="loginPopup">
+    <div class="popup-content">
+        <button class="popup-close" id="closeLoginPopup">&times;</button>
+        <div class="login-header">
+            <h3>Login <span>Patient</span></h3>
+        </div>
+
+        <!-- Add Django messages display -->
+        {% if messages %}
+        <div class="messages mb-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Login Form -->
+        <form method="POST" action="{% url 'login' %}" id="loginForm">
+            {% csrf_token %}
+            
+            <div class="message" id="loginMessage"></div>
+
+            <div class="form-floating mt-3 mb-3">
+                <input type="text" class="form-control" name='username' id="popupFloatingInput" placeholder="User Name" required>
+                <label for="popupFloatingInput">User Name</label>
+            </div>
+
+            <div class="form-floating mt-3 mb-3">
+                <input type="password" class="form-control" name='password' id="popupMyInput" placeholder="Password" required>
+                <label for="popupMyInput">Password</label>
+                <input type="checkbox" class="mt-2" onclick="popupMyFunction11()"> Show Password
+            </div>
+
+            <div class="text-right">
+                <a class="forgot-link" href="#" id="forgotPasswordLink">Forgot Password ?</a>
+            </div>
+
+            <button class="book-btn-gradient btn-block btn-lg" type="submit" id="loginSubmitBtn">
+                Login
+            </button>
+
+            <div class="text-center dont-have mt-3">
+                Don't have an account?
+                <a href="#" id="registerLink">Register</a>
+            </div>
+        </form>
     </div>
-    <!-- /Main Wrapper -->
+  </div>
 
-    <!-- jQuery -->
-    <script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script>
+  <!-- Popup Register Form -->
+  <div class="popup-overlay" id="registerPopup">
+    <div class="popup-content">
+        <button class="popup-close" id="closeRegisterPopup">&times;</button>
+        <div class="login-header">
+            <h3 style="text-align: center;">Patient Register</h3>
+        </div>
 
-    <!-- Bootstrap Core JS -->
-    <script src="{% static 'HealthStack-System/js/Normal/popper.min.js' %}"></script>
-    <script src="{% static 'HealthStack-System/js/Normal/bootstrap.min.js' %}"></script>
+        <!-- Register Form -->
+        <form method="POST" action="{% url 'patient-register' %}" id="registerForm">
+            {% csrf_token %}
+            
+            <div class="message" id="registerMessage"></div>
 
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}"
-    />
+            <div class="form-group">
+                <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+            </div>
 
-    <!-- Slick JS -->
-    <script src="{% static 'HealthStack-System/Outside_assets/js/slick.js' %}"></script>
+            <div class="form-group">
+                <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+            </div>
 
-    <!-- Custom JS -->
-    <script src="{% static 'HealthStack-System/Outside_assets/js/script.js' %}"></script>
-  </body>
+            <div class="form-group">
+                <input type="text" class="form-control" name="username" placeholder="Username" required>
+            </div>
 
-  <!-- doccure/index.html  30 Nov 2019 04:12:03 GMT -->
+            <div class="form-group">
+                <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" name="password" id="registerPassword" placeholder="Password" required>
+                <small class="form-text text-muted">Password must be at least 8 characters long</small>
+                <div class="show-password">
+                    <input type="checkbox" onclick="toggleRegisterPassword()"> Show Password
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" name="confirm_password" id="confirmPassword" placeholder="Confirm Password" required>
+            </div>
+
+            <button class="book-btn-gradient btn-block btn-lg" type="submit" id="registerSubmitBtn">
+                Sign Up
+            </button>
+
+            <div class="text-center dont-have mt-3">
+                Already have an account?
+                <a href="#" id="loginLink">Login</a>
+            </div>
+        </form>
+    </div>
+  </div>
+
+  <!-- Popup Forgot Password Form -->
+  <div class="popup-overlay" id="forgotPasswordPopup">
+      <div class="popup-content">
+          <button class="popup-close" id="closeForgotPasswordPopup">&times;</button>
+          <div class="login-header">
+              <h3>Forgot Password?</h3>
+              <p class="small">Enter your email to get a password reset link</p>
+          </div>
+
+          <form method="POST" id="forgotPasswordForm">
+              {% csrf_token %}
+              <div class="message" id="forgotPasswordMessage"></div>
+
+              <div class="form-group">
+                  <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+              </div>
+
+              <div class="text-right">
+                  <a class="forgot-link" href="#" id="backToLoginLink">Remember your password?</a>
+              </div>
+
+              <button class="book-btn-gradient btn-block btn-lg" type="submit" id="forgotPasswordSubmitBtn">
+                  Reset Password
+              </button>
+          </form>
+      </div>
+  </div>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          // Popup elements
+          const loginPopup = document.getElementById('loginPopup');
+          const registerPopup = document.getElementById('registerPopup');
+          const forgotPasswordPopup = document.getElementById('forgotPasswordPopup');
+          const bookAppointmentBtn = document.getElementById('bookAppointmentBtn');
+          
+          // Link elements
+          const registerLink = document.getElementById('registerLink');
+          const loginLink = document.getElementById('loginLink');
+          const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+          const backToLoginLink = document.getElementById('backToLoginLink');
+          
+          // Close buttons
+          const closeLoginPopup = document.getElementById('closeLoginPopup');
+          const closeRegisterPopup = document.getElementById('closeRegisterPopup');
+          const closeForgotPasswordPopup = document.getElementById('closeForgotPasswordPopup');
+          
+          // Form elements
+          const loginForm = document.getElementById('loginForm');
+          const registerForm = document.getElementById('registerForm');
+          const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+          
+          // Message elements
+          const loginMessage = document.getElementById('loginMessage');
+          const registerMessage = document.getElementById('registerMessage');
+          const forgotPasswordMessage = document.getElementById('forgotPasswordMessage');
+
+          // Show message function
+          function showMessage(element, message, type) {
+              if (!element) return;
+              
+              element.innerHTML = message;
+              element.className = `message ${type === 'success' ? 'message-success' : 'message-error'}`;
+              element.style.display = 'block';
+              
+              // Scroll to message
+              element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              
+              setTimeout(() => {
+                  element.style.display = 'none';
+              }, 5000);
+          }
+
+          // Validate password match
+          function validatePassword() {
+              const password = document.getElementById('registerPassword').value;
+              const confirmPassword = document.getElementById('confirmPassword').value;
+              
+              if (password.length < 8) {
+                  return "Password must be at least 8 characters long";
+              }
+              
+              if (password !== confirmPassword) {
+                  return "Passwords do not match";
+              }
+              
+              return null;
+          }
+
+          // Popup functionality
+          function openLoginPopup() {
+              if (loginPopup) loginPopup.classList.add('active');
+              if (registerPopup) registerPopup.classList.remove('active');
+              if (forgotPasswordPopup) forgotPasswordPopup.classList.remove('active');
+              document.body.style.overflow = 'hidden';
+          }
+
+          function openRegisterPopup() {
+              if (registerPopup) registerPopup.classList.add('active');
+              if (loginPopup) loginPopup.classList.remove('active');
+              if (forgotPasswordPopup) forgotPasswordPopup.classList.remove('active');
+              document.body.style.overflow = 'hidden';
+          }
+
+          function openForgotPasswordPopup() {
+              if (forgotPasswordPopup) forgotPasswordPopup.classList.add('active');
+              if (loginPopup) loginPopup.classList.remove('active');
+              if (registerPopup) registerPopup.classList.remove('active');
+              document.body.style.overflow = 'hidden';
+          }
+
+          function closePopups() {
+              if (loginPopup) loginPopup.classList.remove('active');
+              if (registerPopup) registerPopup.classList.remove('active');
+              if (forgotPasswordPopup) forgotPasswordPopup.classList.remove('active');
+              document.body.style.overflow = 'auto';
+          }
+
+          // Event listeners for opening popups
+          if (bookAppointmentBtn) {
+              bookAppointmentBtn.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  openLoginPopup();
+              });
+          }
+
+          // Register link
+          if (registerLink) {
+              registerLink.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  openRegisterPopup();
+              });
+          }
+
+          // Login link
+          if (loginLink) {
+              loginLink.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  openLoginPopup();
+              });
+          }
+
+          // Forgot password link
+          if (forgotPasswordLink) {
+              forgotPasswordLink.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  openForgotPasswordPopup();
+              });
+          }
+
+          // Back to login link
+          if (backToLoginLink) {
+              backToLoginLink.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  openLoginPopup();
+              });
+          }
+
+          // Event listeners for closing popups
+          if (closeLoginPopup) {
+              closeLoginPopup.addEventListener('click', closePopups);
+          }
+
+          if (closeRegisterPopup) {
+              closeRegisterPopup.addEventListener('click', closePopups);
+          }
+
+          if (closeForgotPasswordPopup) {
+              closeForgotPasswordPopup.addEventListener('click', closePopups);
+          }
+
+          // Close popups when clicking outside
+          [loginPopup, registerPopup, forgotPasswordPopup].forEach(popup => {
+              if (popup) {
+                  popup.addEventListener('click', function(e) {
+                      if (e.target === popup) {
+                          closePopups();
+                      }
+                  });
+              }
+          });
+
+          // Close popup with Escape key
+          document.addEventListener('keydown', function(e) {
+              if (e.key === 'Escape') {
+                  closePopups();
+              }
+          });
+
+          // Login Form AJAX submission
+          // Login Form AJAX submission - SIMPLIFIED
+  if (loginForm) {
+      loginForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          console.log("Form submission started");
+          
+          const formData = new FormData(loginForm);
+          const submitBtn = document.getElementById('loginSubmitBtn');
+          const originalText = submitBtn.innerHTML;
+          
+          // Show loading state
+          submitBtn.innerHTML = 'Logging in...';
+          submitBtn.disabled = true;
+          
+          // Clear previous messages
+          if (loginMessage) {
+              loginMessage.style.display = 'none';
+              loginMessage.innerHTML = '';
+          }
+          
+          // Simple fetch without complex headers
+          fetch(loginForm.action, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest'
+                  // Let Django handle CSRF via the form token
+              }
+          })
+          .then(response => {
+              console.log("Response received:", response.status);
+              
+              if (response.status === 500) {
+                  throw new Error('Server error (500). Check Django console.');
+              }
+              
+              if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              
+              return response.json();
+          })
+          .then(data => {
+              console.log("Parsed data:", data);
+              
+              if (data.success) {
+                  showMessage(loginMessage, 'Login successful! Redirecting...', 'success');
+                  setTimeout(() => {
+                      window.location.href = data.redirect_url || '/patient-dashboard/';
+                  }, 1000);
+              } else {
+                  showMessage(loginMessage, data.error || 'Login failed', 'error');
+                  submitBtn.innerHTML = originalText;
+                  submitBtn.disabled = false;
+              }
+          })
+          .catch(error => {
+              console.error('Error details:', error);
+              showMessage(loginMessage, 'Server error. Check console for details.', 'error');
+              submitBtn.innerHTML = originalText;
+              submitBtn.disabled = false;
+          });
+      });
+  }
+          // Register Form AJAX submission
+          if (registerForm) {
+              registerForm.addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  
+                  // Validate passwords first
+                  const passwordError = validatePassword();
+                  if (passwordError) {
+                      showMessage(registerMessage, passwordError, 'error');
+                      return;
+                  }
+                  
+                  // Get form data
+                  const formData = new FormData(registerForm);
+                  const submitBtn = document.getElementById('registerSubmitBtn');
+                  const originalText = submitBtn.innerHTML;
+                  
+                  // Show loading state
+                  submitBtn.innerHTML = 'Creating Account...';
+                  submitBtn.disabled = true;
+                  
+                  // Get CSRF token
+                  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                  
+                  // AJAX request
+                  fetch(registerForm.action, {
+                      method: 'POST',
+                      body: formData,
+                      headers: {
+                          'X-Requested-With': 'XMLHttpRequest',
+                          'X-CSRFToken': csrfToken
+                      }
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          showMessage(registerMessage, data.message || 'Registration successful! You can now login.', 'success');
+                          
+                          // Clear form
+                          registerForm.reset();
+                          
+                          // Redirect to login after success
+                          setTimeout(() => {
+                              closePopups();
+                              openLoginPopup();
+                              showMessage(loginMessage, 'Registration successful! Please login.', 'success');
+                          }, 2000);
+                      } else {
+                          showMessage(registerMessage, data.message || 'Registration failed. Please try again.', 'error');
+                      }
+                  })
+                  .catch(error => {
+                      console.error('Error:', error);
+                      showMessage(registerMessage, 'An error occurred. Please try again.', 'error');
+                  })
+                  .finally(() => {
+                      // Restore button state
+                      submitBtn.innerHTML = originalText;
+                      submitBtn.disabled = false;
+                  });
+              });
+          }
+
+          // Forgot Password Form
+          if (forgotPasswordForm) {
+              forgotPasswordForm.addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  
+                  const submitBtn = document.getElementById('forgotPasswordSubmitBtn');
+                  const originalText = submitBtn.innerHTML;
+                  
+                  // Show loading state
+                  submitBtn.innerHTML = 'Sending Reset Link...';
+                  submitBtn.disabled = true;
+
+                  // Simulate API call
+                  setTimeout(() => {
+                      showMessage(forgotPasswordMessage, 'Password reset link sent to your email!', 'success');
+                      
+                      // Clear form
+                      forgotPasswordForm.reset();
+                      
+                      // Restore button state and close popup
+                      setTimeout(() => {
+                          submitBtn.innerHTML = originalText;
+                          submitBtn.disabled = false;
+                          closePopups();
+                      }, 2000);
+                  }, 1500);
+              });
+          }
+
+          // Real-time password validation for register form
+          if (registerForm) {
+              const passwordInput = document.getElementById('registerPassword');
+              const confirmPasswordInput = document.getElementById('confirmPassword');
+              
+              if (passwordInput && confirmPasswordInput) {
+                  [passwordInput, confirmPasswordInput].forEach(input => {
+                      input.addEventListener('input', function() {
+                          const error = validatePassword();
+                          if (error && passwordInput.value.length > 0) {
+                              confirmPasswordInput.style.borderColor = '#dc3545';
+                          } else if (confirmPasswordInput.value.length > 0) {
+                              confirmPasswordInput.style.borderColor = '#28a745';
+                          } else {
+                              confirmPasswordInput.style.borderColor = '';
+                          }
+                      });
+                  });
+              }
+          }
+
+          // Password toggle functions
+          window.toggleRegisterPassword = function() {
+              const passwordInput = document.getElementById('registerPassword');
+              if (passwordInput) {
+                  passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+              }
+          };
+
+          window.popupMyFunction11 = function() {
+              const passwordInput = document.getElementById('popupMyInput');
+              if (passwordInput) {
+                  passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+              }
+          };
+      });
+  </script>
+  <!-- End - Patient Login, Register and Forgot password popup form & JS -->
+
+  <!-- Start - Doctor Login, Register popup form & JS -->
+  <!-- Doctor Login Popup Form -->
+  <div class="popup-overlay" id="doctorLoginPopup">
+    <div class="popup-content">
+      <button class="popup-close" id="closeDoctorLoginPopup">&times;</button>
+      <div class="login-header">
+        <h3>Login <span>Doctor</span></h3>
+        <a href="#" id="patientLoginLink" style="text-decoration: none; font-size: 0.9rem;">Are you a patient?</a>
+      </div>
+
+      <form method="POST" action="{% url 'doctor-login' %}" id="doctorLoginForm">
+        {% csrf_token %}
+
+        {% include 'message.html' %}
+
+        <div class="form-floating mt-3 mb-3">
+          <input type="text" class="form-control" name='username' id="doctorFloatingInput" placeholder="User Name" required>
+          <label for="doctorFloatingInput">User Name</label>
+        </div>
+
+        <div class="form-floating mt-3 mb-3">
+          <input type="password" class="form-control" name='password' id="doctorMyInput" placeholder="Password" required>
+          <label for="doctorMyInput">Password</label>
+          <input type="checkbox" class="mt-2" onclick="doctorMyFunction11()"> Show Password
+        </div>
+
+        <div class="text-right">
+          <a class="forgot-link" href="{% url 'reset-password' %}" style="text-decoration: none;">Forgot Password ?</a>
+        </div>
+        
+        <button class="book-btn-gradient btn-block btn-lg" type="submit">
+          Login
+        </button>
+        
+        <div class="text-center dont-have mt-3">
+          Don't have an account?
+          <a href="#" id="doctorRegisterLink" style="text-decoration: none;">Register</a>
+          <br>
+          <b>Want to login as 
+          <a href="{% url 'admin-login' %}" style="color: skyblue; text-decoration: none;"> Admin? </a></b>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Doctor Register Popup Form -->
+  <div class="popup-overlay" id="doctorRegisterPopup">
+      <div class="popup-content doctor-register-content">
+          <button class="popup-close" id="closeDoctorRegisterPopup">&times;</button>
+          <div class="login-header">
+              <h3 style="text-align: center;">Doctor Register</h3>
+          </div>
+
+          <form method="POST" action="{% url 'doctor-register' %}" id="doctorRegisterForm">
+              {% csrf_token %}
+              
+              <div class="message" id="doctorRegisterMessage"></div>
+
+              <!-- Hidden field for user type -->
+              <input type="hidden" name="user_type" value="doctor">
+              <div class="form-row">
+                  <div class="form-group col-md-6">
+                      <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+                      <div class="field-errors" id="first_name_errors"></div>
+                  </div>
+                  <div class="form-group col-md-6">
+                      <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+                      <div class="field-errors" id="last_name_errors"></div>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <input type="text" class="form-control" name="username" placeholder="Username" required>
+                  <div class="field-errors" id="username_errors"></div>
+              </div>
+
+              <div class="form-group">
+                  <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+                  <div class="field-errors" id="email_errors"></div>
+              </div>
+
+              <div class="form-row">
+                  <div class="form-group col-md-6">
+                      <input type="password" class="form-control" name="password1" id="doctorRegisterPassword" placeholder="Password" required>
+                      <div class="show-password">
+                          <input type="checkbox" onclick="toggleDoctorRegisterPassword()"> Show Password
+                      </div>
+                      <div class="field-errors" id="password1_errors"></div>
+                  </div>
+                  <div class="form-group col-md-6">
+                      <input type="password" class="form-control" name="password2" placeholder="Confirm Password" required>
+                      <div class="field-errors" id="password2_errors"></div>
+                  </div>
+              </div>
+
+              <!-- Additional doctor-specific fields -->
+              <div class="form-group">
+                  <input type="text" class="form-control" name="doctor_id" placeholder="Doctor ID/License Number" required>
+                  <div class="field-errors" id="doctor_id_errors"></div>
+              </div>
+
+              <div class="form-group">
+                  <input type="text" class="form-control" name="specialization" placeholder="Specialization" required>
+                  <div class="field-errors" id="specialization_errors"></div>
+              </div>
+              
+              <button class="book-btn-gradient btn-block btn-lg" type="submit">
+                  Sign Up
+              </button>
+
+              <div class="text-center dont-have mt-3">
+                  Already have an account?
+                  <a href="#" id="doctorLoginLink">Login</a>
+              </div>
+          </form>
+      </div>
+  </div>
+  <style>
+      /* Doctor Register Popup Specific Styles */
+    .doctor-register-content {
+        max-height: 85vh;
+        overflow-y: auto;
+        width: 90%;
+        max-width: 500px;
+        padding: 25px;
+    }
+
+    .doctor-register-content .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -5px;
+        margin-left: -5px;
+    }
+
+    .doctor-register-content .form-group {
+        margin-bottom: 1rem;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+    .doctor-register-content .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .doctor-register-content .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .doctor-register-content .form-control:focus {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: #00d4ff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
+        color: #fff;
+    }
+
+    .doctor-register-content .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .doctor-register-content .show-password {
+        margin-top: 8px;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .doctor-register-content .show-password input {
+        margin-right: 5px;
+    }
+
+    .doctor-register-content .book-btn-gradient {
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    /* Scrollbar styling for doctor register form */
+    .doctor-register-content::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .doctor-register-content::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .doctor-register-content::-webkit-scrollbar-thumb {
+        background: rgba(0, 212, 255, 0.5);
+        border-radius: 10px;
+    }
+
+    .doctor-register-content::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 212, 255, 0.7);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .doctor-register-content {
+            width: 95%;
+            max-width: 95%;
+            padding: 20px 15px;
+        }
+        
+        .doctor-register-content .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        
+        .doctor-register-content .form-control {
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Field errors styling */
+    .field-errors {
+        color: #ff6b6b;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        min-height: 20px;
+    }
+
+    .field-errors ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .form-control.error {
+        border-color: #ff6b6b;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
+    }
+      
+      .message {
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        display: none;
+      }
+      
+      .message-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      
+      .message-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
+
+  <script>
+    // Global message function
+    function showMessage(element, message, type) {
+      if (!element) return;
+      
+      element.innerHTML = message;
+      element.className = `message ${type === 'success' ? 'message-success' : 'message-error'}`;
+      element.style.display = 'block';
+      
+      // Scroll to message
+      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+      setTimeout(() => {
+        element.style.display = 'none';
+      }, 5000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Doctor Popup elements
+      const doctorLoginPopup = document.getElementById('doctorLoginPopup');
+      const doctorRegisterPopup = document.getElementById('doctorRegisterPopup');
+      
+      // Doctor Link elements
+      const doctorLoginLink = document.getElementById('doctorLoginLink');
+      const doctorRegisterLink = document.getElementById('doctorRegisterLink');
+      const patientLoginLink = document.getElementById('patientLoginLink');
+      const openDoctorLoginPopupBtn = document.getElementById('openDoctorLoginPopup');
+      
+      // Doctor Close buttons
+      const closeDoctorLoginPopup = document.getElementById('closeDoctorLoginPopup');
+      const closeDoctorRegisterPopup = document.getElementById('closeDoctorRegisterPopup');
+      
+      // Doctor Form elements
+      const doctorLoginForm = document.getElementById('doctorLoginForm');
+      const doctorRegisterForm = document.getElementById('doctorRegisterForm');
+      
+      // Doctor Message elements
+      const doctorRegisterMessage = document.getElementById('doctorRegisterMessage');
+
+      // Doctor Popup functionality
+      function openDoctorLoginPopup() {
+        if (doctorLoginPopup) doctorLoginPopup.classList.add('active');
+        if (doctorRegisterPopup) doctorRegisterPopup.classList.remove('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function openDoctorRegisterPopup() {
+        if (doctorRegisterPopup) doctorRegisterPopup.classList.add('active');
+        if (doctorLoginPopup) doctorLoginPopup.classList.remove('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeDoctorPopups() {
+        if (doctorLoginPopup) doctorLoginPopup.classList.remove('active');
+        if (doctorRegisterPopup) doctorRegisterPopup.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+
+      // Event listeners for opening doctor popups
+      if (openDoctorLoginPopupBtn) {
+        openDoctorLoginPopupBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          openDoctorLoginPopup();
+        });
+      }
+
+      if (doctorLoginLink) {
+        doctorLoginLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          openDoctorLoginPopup();
+        });
+      }
+
+      if (doctorRegisterLink) {
+        doctorRegisterLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          openDoctorRegisterPopup();
+        });
+      }
+
+      if (patientLoginLink) {
+        patientLoginLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          closeDoctorPopups();
+          // Open patient login popup if exists
+          const loginPopup = document.getElementById('loginPopup');
+          if (loginPopup) loginPopup.classList.add('active');
+        });
+      }
+
+      // Event listeners for closing doctor popups
+      if (closeDoctorLoginPopup) {
+        closeDoctorLoginPopup.addEventListener('click', closeDoctorPopups);
+      }
+
+      if (closeDoctorRegisterPopup) {
+        closeDoctorRegisterPopup.addEventListener('click', closeDoctorPopups);
+      }
+
+      // Close doctor popups when clicking outside
+      [doctorLoginPopup, doctorRegisterPopup].forEach(popup => {
+        if (popup) {
+          popup.addEventListener('click', function(e) {
+            if (e.target === popup) {
+              closeDoctorPopups();
+            }
+          });
+        }
+      });
+
+      // Close popup with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeDoctorPopups();
+        }
+      });
+
+      // Doctor Login Form AJAX submission
+      if (doctorLoginForm) {
+        doctorLoginForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const formData = new FormData(doctorLoginForm);
+          const submitBtn = doctorLoginForm.querySelector('button[type="submit"]');
+          const originalText = submitBtn.innerHTML;
+          
+          // Show loading state
+          submitBtn.innerHTML = 'Logging in...';
+          submitBtn.disabled = true;
+          
+          // AJAX request with proper headers
+          fetch(doctorLoginForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': '{{ csrf_token }}'
+            }
+          })
+          .then(response => {
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+              return response.json();
+            } else {
+              // If it's not JSON, it might be a redirect
+              return response.text().then(text => {
+                throw new Error('Expected JSON response');
+              });
+            }
+          })
+          .then(data => {
+            if (data.success) {
+              showMessage(doctorRegisterMessage, data.message || 'Login successful!', 'success');
+              
+              // Redirect after successful login
+              setTimeout(() => {
+                if (data.redirect_url) {
+                  window.location.href = data.redirect_url;
+                } else {
+                  window.location.reload();
+                }
+              }, 1000);
+            } else {
+              showMessage(doctorRegisterMessage, data.message || 'Login failed. Please check your credentials.', 'error');
+              submitBtn.innerHTML = originalText;
+              submitBtn.disabled = false;
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            // If AJAX fails, fall back to traditional form submission
+            showMessage(doctorRegisterMessage, 'Logging you in...', 'success');
+            setTimeout(() => {
+              doctorLoginForm.submit(); // Traditional form submission
+            }, 500);
+          });
+        });
+      }
+
+      // Doctor Register Form
+      if (doctorRegisterForm) {
+        doctorRegisterForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // Clear previous errors
+          clearDoctorErrors();
+          
+          // Validate passwords first
+          const passwordError = validateDoctorPassword();
+          if (passwordError) {
+            showMessage(doctorRegisterMessage, passwordError, 'error');
+            return;
+          }
+          
+          // Get form data
+          const formData = new FormData(doctorRegisterForm);
+          const submitBtn = doctorRegisterForm.querySelector('button[type="submit"]');
+          const originalText = submitBtn.innerHTML;
+          
+          // Show loading state
+          submitBtn.innerHTML = 'Creating Account...';
+          submitBtn.disabled = true;
+          
+          // AJAX request
+          fetch(doctorRegisterForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': '{{ csrf_token }}'
+            }
+          })
+          .then(response => {
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+              return response.json();
+            } else {
+              return response.text().then(text => {
+                throw new Error('Expected JSON response');
+              });
+            }
+          })
+          .then(data => {
+            if (data.success) {
+              // Registration successful
+              showMessage(doctorRegisterMessage, data.message || 'Registration successful!', 'success');
+              
+              // Clear form
+              doctorRegisterForm.reset();
+              
+              // Redirect or close popup after success
+              setTimeout(() => {
+                if (data.redirect_url) {
+                  window.location.href = data.redirect_url;
+                } else {
+                  closeDoctorPopups();
+                  // Optionally open login popup
+                  openDoctorLoginPopup();
+                }
+              }, 2000);
+            } else {
+              // Registration failed - show field errors
+              if (data.errors) {
+                displayDoctorFieldErrors(data.errors);
+              } else {
+                showMessage(doctorRegisterMessage, data.message || 'Registration failed. Please try again.', 'error');
+              }
+              submitBtn.innerHTML = originalText;
+              submitBtn.disabled = false;
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showMessage(doctorRegisterMessage, 'An error occurred. Please try again.', 'error');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+          });
+        });
+      }
+
+      // Clear all doctor form errors
+      function clearDoctorErrors() {
+        const errorElements = document.querySelectorAll('.field-errors');
+        errorElements.forEach(element => {
+          element.innerHTML = '';
+        });
+        
+        const errorInputs = document.querySelectorAll('.form-control.error');
+        errorInputs.forEach(input => {
+          input.classList.remove('error');
+        });
+        
+        if (doctorRegisterMessage) {
+          doctorRegisterMessage.style.display = 'none';
+          doctorRegisterMessage.innerHTML = '';
+        }
+      }
+
+      // Display field-specific errors
+      function displayDoctorFieldErrors(errors) {
+        for (const field in errors) {
+          const errorElement = document.getElementById(field + '_errors');
+          const inputElement = doctorRegisterForm.querySelector(`[name="${field}"]`);
+          
+          if (errorElement && inputElement) {
+            // Handle different error formats
+            let errorMessages = errors[field];
+            if (Array.isArray(errorMessages)) {
+              errorElement.innerHTML = errorMessages.join('<br>');
+            } else if (typeof errorMessages === 'object') {
+              errorElement.innerHTML = Object.values(errorMessages).join('<br>');
+            } else {
+              errorElement.innerHTML = errorMessages;
+            }
+            inputElement.classList.add('error');
+          }
+        }
+      }
+
+      // Validate doctor password
+      function validateDoctorPassword() {
+        const password = doctorRegisterForm.querySelector('input[name="password1"]');
+        const confirmPassword = doctorRegisterForm.querySelector('input[name="password2"]');
+        
+        if (!password || !confirmPassword) return null;
+        
+        const passwordValue = password.value;
+        const confirmPasswordValue = confirmPassword.value;
+        
+        if (passwordValue.length < 8) {
+          return "Password must be at least 8 characters long";
+        }
+        
+        if (passwordValue !== confirmPasswordValue) {
+          return "Passwords do not match";
+        }
+        
+        return null;
+      }
+
+      // Real-time password validation for register form
+      if (doctorRegisterForm) {
+        const passwordInput = doctorRegisterForm.querySelector('input[name="password1"]');
+        const confirmPasswordInput = doctorRegisterForm.querySelector('input[name="password2"]');
+        
+        if (passwordInput && confirmPasswordInput) {
+          [passwordInput, confirmPasswordInput].forEach(input => {
+            input.addEventListener('input', function() {
+              const error = validateDoctorPassword();
+              if (error) {
+                confirmPasswordInput.style.borderColor = '#dc3545';
+              } else {
+                confirmPasswordInput.style.borderColor = '';
+              }
+            });
+          });
+        }
+      }
+
+      // Doctor password toggle functions
+      window.toggleDoctorRegisterPassword = function() {
+        const passwordInput = document.getElementById('doctorRegisterPassword');
+        if (passwordInput) {
+          passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+        }
+      };
+
+      window.doctorMyFunction11 = function() {
+        const passwordInput = document.getElementById('doctorMyInput');
+        if (passwordInput) {
+          passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+        }
+      };
+
+      // Real-time field validation
+      if (doctorRegisterForm) {
+        const inputs = doctorRegisterForm.querySelectorAll('input[required]');
+        inputs.forEach(input => {
+          input.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+              this.classList.add('error');
+              const errorElement = document.getElementById(this.name + '_errors');
+              if (errorElement) {
+                errorElement.innerHTML = 'This field is required';
+              }
+            } else {
+              this.classList.remove('error');
+              const errorElement = document.getElementById(this.name + '_errors');
+              if (errorElement) {
+                errorElement.innerHTML = '';
+              }
+            }
+          });
+        });
+      }
+    });
+  </script>
+  <!-- End - Doctor Login, Register popup form & JS -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script>
+  <script src="{% static 'HealthStack-System/js/Normal/popper.min.js' %}"></script>
+  <script src="{% static 'HealthStack-System/js/Normal/bootstrap.min.js' %}"></script>
+  <script src="{% static 'HealthStack-System/Outside_assets/js/slick.js' %}"></script>
+  <script src="{% static 'HealthStack-System/Outside_assets/js/script.js' %}"></script>
+
+  <script>
+    // Swiper initialization
+    document.addEventListener('DOMContentLoaded', function () {
+      new Swiper('.hospital-swiper', {
+        loop: true,
+        slidesPerView: 'auto',
+        spaceBetween: 24,
+        speed: 4500,
+        freeMode: true,
+        freeModeMomentum: false,
+        autoplay: {
+          delay: 1,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: false
+        },
+        grabCursor: true,
+        breakpoints: {
+          320:  { slidesPerView: 1.05, speed:3000 },
+          576:  { slidesPerView: 1.4,  speed:3500 },
+          768:  { slidesPerView: 2.1,  speed:4000 },
+          992:  { slidesPerView: 3,    speed:4500 },
+          1200: { slidesPerView: 3.5,  speed:4500 }
+        }
+      });
+
+      // Popup Login Form functionality
+      const loginPopup = document.getElementById('loginPopup');
+      const bookAppointmentBtn = document.getElementById('bookAppointmentBtn');
+      const closeLoginPopup = document.getElementById('closeLoginPopup');
+      
+      // Open popup when Book Appointment button is clicked
+      bookAppointmentBtn.addEventListener('click', function() {
+        loginPopup.classList.add('active');
+      });
+      
+      // Close popup when close button is clicked
+      closeLoginPopup.addEventListener('click', function() {
+        loginPopup.classList.remove('active');
+      });
+      
+      // Close popup when clicking outside
+      loginPopup.addEventListener('click', function(e) {
+        if (e.target === loginPopup) {
+          loginPopup.classList.remove('active');
+        }
+      });
+      
+      // Close popup with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          loginPopup.classList.remove('active');
+        }
+      });
+    });
+
+    // Show Password function for popup form
+    function popupMyFunction11() {
+      var x = document.getElementById('popupMyInput');
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+  </script>
+
+  <!-- Open doctor login popup if requested -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('show') === 'doctor-login') {
+        const popup = document.getElementById('doctorLoginPopup');
+        if (popup) {
+          popup.classList.add('active');
+          // remove the query param from the URL
+          const url = new URL(window.location.href);
+          url.searchParams.delete('show');
+          window.history.replaceState({}, '', url);
+        }
+      }
+    });
+  </script>
+
+  <!-- Toast Message -->
+  {% if messages %}
+  <script>
+    {% for message in messages %}
+    $(document).ready(function () {
+      $('.toast').toast('show');
+    });
+    {% endfor %}
+  </script>
+  {% endif %}
+</body>
 </html>

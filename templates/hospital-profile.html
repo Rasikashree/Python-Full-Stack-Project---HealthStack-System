@@ -69,7 +69,7 @@
 				
 			
 			<!-- Breadcrumb -->
-			<div class="breadcrumb-bar">
+			<!-- <div class="breadcrumb-bar">
 				<div class="container-fluid">
 					<div class="row align-items-center">
 						<div class="col-md-12 col-12">
@@ -89,7 +89,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<!-- /Breadcrumb -->
 			
 			<!-- Page Content -->
@@ -167,25 +167,20 @@
 
 												</div>
 
-												<div class="clinic-services">
-													<span>childrens special</span>
-													<span>Always available emergency doctors</span>
-													
-												</div>
 												
 											</div>
 											</div>
 										</div>
 										<div class="doc-info-right col-md-6" >
-											<div class="clini-infos">
+											<!-- <div class="clini-infos">
 												<ul>
 													{% comment %} <li><i class="far fa-thumbs-up"></i> 99%</li>
 													<li><i class="far fa-comment"></i> 35 Feedback</li> {% endcomment %}
 													<li><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</li>
 												
 												</ul>
-											</div>
-											<div class="doctor-action">
+											</div> -->
+											<!-- <div class="doctor-action">
 												<a href="javascript:void(0)" class="btn btn-white fav-btn">
 													<i class="far fa-bookmark"></i>
 												</a>
@@ -196,7 +191,7 @@
 													<i class="fas fa-phone"></i>
 												</a>
 												
-											</div>
+											</div> -->
 											
 											<div class="clinic-booking">
 												<a class="apt-btn" href="{% url 'hospital-department-list' pk=hospitals.hospital_id %}">Department & Doctor List</a>
@@ -204,12 +199,16 @@
 											<br>
 											
 				
-											{% if user.is_authenticated and user.is_doctor %}
+											{% if user.is_authenticated and user.is_doctor and hospitals.hospital_id %}
 											<div class="clinic-booking">
 												<a class="apt-btn" href="{% url 'hospital-doctor-register' pk=hospitals.hospital_id %}">Register</a>
 											</div>
 											{% endif %}
-											
+											{% if user.is_authenticated and user.is_doctor and not hospitals.hospital_id %}
+											<div class="clinic-booking">
+												<span class="apt-btn disabled">Hospital ID not available</span>
+											</div>
+											{% endif %}
 											
 										</div>
 									</div>
@@ -230,9 +229,9 @@
 											<li class="nav-item">
 												<a class="nav-link" href="#doc_locations" data-toggle="tab">Locations and Contact</a>
 											</li>
-											<li class="nav-item">
+											<!-- <li class="nav-item">
 												<a class="nav-link" href="#doc_emergency" data-toggle="tab">Emergency Info</a>
-											</li>
+											</li> -->
 											
 											
 										</ul>
@@ -250,7 +249,7 @@
 													<!-- About Details -->
 													<div class="widget about-widget">
 														<h4 class="widget-title">About Our Hospital</h4>
-														<p>{{hospitals.description}}</p>
+														<p style="text-align: justify;">{{hospitals.description}}</p>
 													</div>
 													<!-- /About Details -->
 												
@@ -387,7 +386,7 @@
 										<!-- /Locations Content -->
 											
 										<!-- Overview Content -->
-										<div role="tabpanel" id="doc_emergency" class="tab-pane fade show">
+										<!-- <div role="tabpanel" id="doc_emergency" class="tab-pane fade show">
 											<div class="row">
 												<div class="col-md-12 col-lg-12">
 													<Table>
@@ -415,7 +414,7 @@
 													</Table>
 												</div>
 											</div>
-										</div>
+										</div> -->
 										<!-- /Overview Content -->
 										
 									</div>

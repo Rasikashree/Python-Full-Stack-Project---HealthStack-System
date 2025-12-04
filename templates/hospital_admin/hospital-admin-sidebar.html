@@ -1,68 +1,187 @@
+{% load static %}
+
+<!-- ✅ Sidebar CSS -->
+<style>
+  /* Sidebar Container */
+  .sidebar {
+    width: 240px;
+    background: linear-gradient(180deg, #004e92, #000428);
+    position: fixed;
+    top: 50px; /* Top navbar height */
+    bottom: 0;
+    left: 0;
+    height: calc(100vh - 50px);
+    padding-top: 15px;
+    z-index: 999;
+    transition: all 0.3s ease;
+    overflow: hidden; /* ✅ Disable scrolling */
+  }
+
+  .sidebar-inner {
+    height: 100%;
+    overflow: hidden; /* ✅ Disable internal scroll */
+    padding-right: 10px;
+  }
+
+  .sidebar-menu {
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar-menu ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .sidebar-menu .menu-title {
+    padding: 12px 20px;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #00d4ff;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  .sidebar-menu li {
+    position: relative;
+  }
+
+  .sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    padding: 12px 20px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .sidebar-menu li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .sidebar-menu li.active > a {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffcc00;
+  }
+
+  .sidebar-menu i {
+    margin-right: 12px;
+    font-size: 16px;
+    min-width: 20px;
+    color: #00d4ff;
+  }
+
+  .submenu ul {
+    display: none;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .submenu ul li a {
+    padding-left: 40px;
+    font-size: 14px;
+  }
+
+  .submenu.open ul {
+    display: block;
+  }
+
+  /* Hide scrollbars cross-browser */
+  .sidebar-inner::-webkit-scrollbar,
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-inner {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar {
+      left: -240px;
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+  }
+</style>
+
+<!-- ✅ Sidebar HTML -->
 <div class="sidebar" id="sidebar">
-    <div class="sidebar-inner slimscroll">
-        <div id="sidebar-menu" class="sidebar-menu">
-            <ul>
-                <li class="menu-title"> 
-                    <span>Menu</span>
-                </li>
-                <li class=""> 
-                    <a href="{%url 'admin-dashboard' %}"><i class="fe fe-home"></i> <span>Dashboard</span></a>
-                </li>
-                
-                <li class="submenu">
-                    <a href="#"><i class="fe fe-building"></i> <span> Hospitals</span></a>
-                    <ul style="display:none;">
-                        <li><a href="{% url 'hospital-list' %}"><i class="fe fe-edit"></i> <span>Add Hospital</span></a></li>
-                        <li><a href="{% url 'emergency' %}"><i class="fe fe-edit"></i> <span>Add Emergency Info</span></a></li>
-                    </ul>
-                </li>
+  <div class="sidebar-inner">
+    <div id="sidebar-menu" class="sidebar-menu">
+      <ul>
+        <li class="menu-title">
+          <span>Menu</span>
+        </li>
 
-                
+        <li>
+          <a href="{% url 'admin-dashboard' %}"><i class="fe fe-home"></i> <span>Dashboard</span></a>
+        </li>
 
-                <li class="submenu"> 
-                    <a href="#"><i class="fe fe-user-plus"></i> <span>Doctors</span></a>
-                    <ul style="display:none;">
-                        <li><a href="{%url 'register-doctor-list'%}"><i class="fe fe-users"></i> <span>Registered</span></a></li>
-                        <li><a href="{%url 'pending-doctor-list'%}"><i class="fe fe-users"></i> <span>Pending</span></a></li>
-                    </ul>
-                </li>
-                
-                
+        <li class="submenu">
+          <a href="#"><i class="fe fe-building"></i> <span>Hospitals</span></a>
+          <ul>
+            <li><a href="{% url 'hospital-list' %}"><i class="fe fe-edit"></i> <span>Add Hospital</span></a></li>
+            <li><a href="{% url 'emergency' %}"><i class="fe fe-edit"></i> <span>Add Emergency Info</span></a></li>
+          </ul>
+        </li>
 
-                <li class="submenu">
-                    <a href="#"><i class="fe fe-user"></i> <span> Lab Worker</span></a>
-                    <ul style="display:none;">
-                        <li><a href="{% url 'add-lab-worker' %}"><i class="fe fe-user-plus"></i> <span>Add Lab Worker</span></a></li>
-                        <li><a href="{% url 'lab-worker-list' %}"><i class="fe fe-users"></i> <span>View Lab Worker</span></a></li>
-                    </ul>
-                </li>
+        <li class="submenu">
+          <a href="#"><i class="fe fe-user-plus"></i> <span>Doctors</span></a>
+          <ul>
+            <li><a href="{% url 'register-doctor-list' %}"><i class="fe fe-users"></i> <span>Registered</span></a></li>
+            <li><a href="{% url 'pending-doctor-list' %}"><i class="fe fe-users"></i> <span>Pending</span></a></li>
+          </ul>
+        </li>
 
-                <li class="submenu">
-                    <a href="#"><i class="fe fe-user"></i> <span> Pharmacist</span></a>
-                    <ul style="display:none;">
-                        <li><a href="{% url 'add-pharmacist' %}"><i class="fe fe-user-plus"></i> <span>Add Pharmacist</span></a></li>
-                        
-                        <li><a href="{%url 'pharmacist-list'%}"><i class="fe fe-users"></i> <span>View Pharmacist</span></a></li>
-                    </ul>
-                </li>
-                
-                {% comment %} <li class="submenu">
-                    <a href="#"><i class="fe fe-document"></i> <span> Reports</span></a>
-                    <ul style="display: none;">
-                        <li><a href="invoice-report.html">Invoice Reports</a></li>
-                    </ul>
-                </li> {% endcomment %}
+        <li class="submenu">
+          <a href="#"><i class="fe fe-user"></i> <span>Lab Worker</span></a>
+          <ul>
+            <li><a href="{% url 'add-lab-worker' %}"><i class="fe fe-user-plus"></i> <span>Add Lab Worker</span></a></li>
+            <li><a href="{% url 'lab-worker-list' %}"><i class="fe fe-users"></i> <span>View Lab Worker</span></a></li>
+          </ul>
+        </li>
 
-                
+        <!-- <li class="submenu">
+          <a href="#"><i class="fe fe-user"></i> <span>Pharmacist</span></a>
+          <ul>
+            <li><a href="{% url 'add-pharmacist' %}"><i class="fe fe-user-plus"></i> <span>Add Pharmacist</span></a></li>
+            <li><a href="{% url 'pharmacist-list' %}"><i class="fe fe-users"></i> <span>View Pharmacist</span></a></li>
+          </ul>
+        </li> -->
 
-                
-                
-                <li> 
-                    <a href="{%url 'hospital-admin-profile' pk=user.id %}"><i class="fe fe-user-plus"></i> <span>Profile</span></a>
-                </li>
-
-                
-            </ul>
-        </div>
+        <li>
+          <a href="{% url 'hospital-admin-profile' pk=user.id %}">
+            <i class="fe fe-user-plus"></i> <span>Profile</span>
+          </a>
+        </li>
+      </ul>
     </div>
+  </div>
 </div>
+
+<!-- ✅ JS for Submenu Toggle -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const submenus = document.querySelectorAll(".submenu > a");
+
+    submenus.forEach((menu) => {
+      menu.addEventListener("click", function (e) {
+        e.preventDefault();
+        const parent = this.parentElement;
+        parent.classList.toggle("open");
+
+        // Optional: close other submenus
+        document.querySelectorAll(".submenu").forEach((other) => {
+          if (other !== parent) {
+            other.classList.remove("open");
+          }
+        });
+      });
+    });
+  });
+</script>

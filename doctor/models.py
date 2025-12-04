@@ -32,20 +32,18 @@ class Doctor_Information(models.Model):
         ('Physiatrists', 'Physiatrists'),
         ('Dermatologists', 'Dermatologists'),
     )
-    
+
     doctor_id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='profile')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True, blank=True)
     username = models.CharField(max_length=200, null=True, blank=True)
     gender = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(max_length=1000, null=True, blank=True)
     department = models.CharField(max_length=200, choices=DOCTOR_TYPE, null=True, blank=True)
-    department_name = models.ForeignKey(hospital_department, on_delete=models.SET_NULL, null=True, blank=True)
-    specialization = models.ForeignKey(specialization, on_delete=models.SET_NULL, null=True, blank=True)
-
+    department_name = models.ForeignKey(hospital_department, on_delete=models.CASCADE, null=True, blank=True)
+    specialization = models.ForeignKey(specialization, on_delete=models.CASCADE, null=True, blank=True)
     featured_image = models.ImageField(upload_to='doctors/', default='doctors/user-default.png', null=True, blank=True)
-    certificate_image = models.ImageField(upload_to='doctors_certificate/', default='doctors_certificate/default.png', null=True, blank=True)
-
+    certificate_image = models.ImageField(upload_to='doctors_certificate/', null=True, blank=True)
     email = models.EmailField(max_length=200, null=True, blank=True)
     phone_number = models.CharField(max_length=200, null=True, blank=True)
     nid = models.CharField(max_length=200, null=True, blank=True)
@@ -53,26 +51,59 @@ class Doctor_Information(models.Model):
     consultation_fee = models.IntegerField(null=True, blank=True)
     report_fee = models.IntegerField(null=True, blank=True)
     dob = models.CharField(max_length=200, null=True, blank=True)
-    
-    # Education
+
     institute = models.CharField(max_length=200, null=True, blank=True)
     degree = models.CharField(max_length=200, null=True, blank=True)
     completion_year = models.CharField(max_length=200, null=True, blank=True)
-    
-    # work experience
+
     work_place = models.CharField(max_length=200, null=True, blank=True)
     designation = models.CharField(max_length=200, null=True, blank=True)
     start_year = models.CharField(max_length=200, null=True, blank=True)
     end_year = models.CharField(max_length=200, null=True, blank=True)
-    
-    # register_status = models.BooleanField(default=False) default='pending'
-    register_status =  models.CharField(max_length=200, null=True, blank=True)
-    
-    # ForeignKey --> one to one relationship with Hospital_Information model.
-    hospital_name = models.ForeignKey(Hospital_Information, on_delete=models.SET_NULL, null=True, blank=True)
+
+    register_status = models.CharField(max_length=200, null=True, blank=True, default='Pending')
+    hospital_name = models.ForeignKey(Hospital_Information, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('user', 'hospital_name')  # Optional: only one registration per user per hospital
 
     def __str__(self):
-        return str(self.user.username)
+        user_str = self.user.username if self.user else "NoUser"
+        hospital_str = self.hospital_name.name if self.hospital_name else "NoHospital"
+        return f"{user_str} - {hospital_str}"
+
+
+# -----------------------------
+# Specialization
+# -----------------------------
+class Specialization(models.Model):
+    specialization_id = models.AutoField(primary_key=True)
+    specialization_name = models.CharField(max_length=200)
+    hospital = models.ForeignKey(
+        'hospital.Hospital_Information',
+        on_delete=models.CASCADE,
+        related_name='doctor_specializations'
+    )
+
+    def __str__(self):
+        return str(self.specialization_name)
+
+
+# -----------------------------
+# Hospital Department
+# -----------------------------
+class Hospital_Department(models.Model):
+    hospital_department_id = models.AutoField(primary_key=True)
+    hospital_department_name = models.CharField(max_length=200)
+    hospital = models.ForeignKey(
+        'hospital.Hospital_Information',
+        on_delete=models.CASCADE,
+        related_name='doctor_departments'
+    )
+
+    def __str__(self):
+        hospital_name = self.hospital.name if self.hospital else "NoHospital"
+        return f"{hospital_name} - {self.hospital_department_name}"
 
 
 class Appointment(models.Model):

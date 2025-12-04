@@ -39,9 +39,9 @@ def createPatient(sender, instance, created, **kwargs):
             Patient.objects.create(
                 user=user, username=user.username, email=user.email, serial_number = generate_random_string())
         elif instance.is_doctor:
-            user = instance
-            Doctor_Information.objects.create(
-                user=user, username=user.username, email=user.email)
+            # Do not auto-create Doctor_Information here because required FKs (e.g., hospital_name)
+            # may be missing and cause IntegrityError. Let onboarding/profile flow create it.
+            pass
         elif instance.is_hospital_admin:
             user = instance
             Admin_Information.objects.create(

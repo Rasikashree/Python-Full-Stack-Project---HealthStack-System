@@ -51,10 +51,7 @@
     />
 
     <!-- Fancybox CSS -->
-    <link
-      rel="stylesheet"
-      href="% static 'HealthStack-System/plugins/fancybox/jquery.fancybox.min.css' %"
-    />
+    <link href="{% static 'HealthStack-System/plugins/fancybox/jquery.fancybox.min.css' %}" rel="stylesheet">
 
     <!-- Main CSS -->
     <link
@@ -76,7 +73,7 @@
       <!-- /Header -->
 
       <!-- Breadcrumb -->
-      <div class="breadcrumb-bar">
+      <!-- <div class="breadcrumb-bar">
         <div class="container-fluid">
           <div class="row align-items-center">
             <div class="col-md-12 col-12">
@@ -92,7 +89,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- /Breadcrumb -->
 
       <!-- Page Content -->
@@ -107,9 +104,10 @@
             </div>
 
             
-	          <div class="col-md-7 col-lg-8 col-xl-9">
+	        <div class="col-md-7 col-lg-8 col-xl-9">
+				
               
-            <form action="{% url 'doctor-profile-settings' %}" method="POST" enctype="multipart/form-data">
+            <form action="{% url 'doctor-profile-settings' doctor.doctor_id %}" method="POST" enctype="multipart/form-data">
 							<!-- Basic Information -->
               {% csrf_token %}
 							<div class="card">
@@ -393,7 +391,38 @@
       <!-- /Page Content -->
 
       <!-- Footer -->
-      {% include 'footer.html' %}
+    <footer id="contact">
+        <p>&copy; 2025 HealthStack. All Rights Reserved.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p>Contact us: support@healthstack.com | +91 94422 90033</p>
+        <style>
+          footer {
+            background: linear-gradient(135deg, #000428, #004e92);
+            padding: 10px 20px;
+            text-align: center;
+            color: #fff;
+          }
+          footer p {
+            margin: 10px 0;
+            font-size: 0.95rem;
+            color: #ddd;
+          }
+          footer .social-icons a {
+            margin: 0 10px;
+            color: #00d4ff;
+            font-size: 1.4rem;
+            transition: 0.3s;
+          }
+          footer .social-icons a:hover {
+            color: #ffcc00;
+          }
+        </style>
+    </footer>
       <!-- /Footer -->
     </div>
     <!-- /Main Wrapper -->
