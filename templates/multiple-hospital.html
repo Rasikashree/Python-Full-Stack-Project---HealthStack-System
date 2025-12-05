@@ -118,9 +118,13 @@
 
 												<div class="col-xs-12 col-sm-4">
 													<div class="card">
-														<a class="img-card" href="#">
-														<img src="{{hospital.featured_image.url}}" />
-													  </a>
+																												<a class="img-card" href="#">
+																												{% if hospital.featured_image %}
+																												<img src="{{ hospital.featured_image.url }}" alt="Hospital" />
+																												{% else %}
+																												<img src="{% static 'HealthStack-System/images/Normal/default-hospital.jpg' %}" alt="Hospital" />
+																												{% endif %}
+																											</a>
 														<div class="card-content">
 															<h4 class="card-title">
 																<a href="#"> {{hospital.name}}
@@ -144,7 +148,7 @@
 								</div>
 								
 							</section>
-							{% include 'pagination.html' with queryset=hospitals custom_range=custom_range %}
+                            
 						</div>
 						
 					</div>

@@ -526,11 +526,9 @@ def multiple_hospital(request):
             hospitals = Hospital_Information.objects.all()
             
             hospitals, search_query = searchHospitals(request)
-            
-            # PAGINATION ADDED TO MULTIPLE HOSPITALS
-            custom_range, hospitals = paginateHospitals(request, hospitals, 3)
-        
-            context = {'patient': patient, 'doctors': doctors, 'hospitals': hospitals, 'search_query': search_query, 'custom_range': custom_range}
+
+            # Show all hospitals on single page (no pagination)
+            context = {'patient': patient, 'doctors': doctors, 'hospitals': hospitals, 'search_query': search_query}
             return render(request, 'multiple-hospital.html', context)
         
         elif request.user.is_doctor:
@@ -539,7 +537,8 @@ def multiple_hospital(request):
             hospitals = Hospital_Information.objects.all()
             
             hospitals, search_query = searchHospitals(request)
-            
+
+            # Show all hospitals on single page (no pagination)
             context = {'doctor': doctor, 'hospitals': hospitals, 'search_query': search_query}
             return render(request, 'multiple-hospital.html', context)
     else:

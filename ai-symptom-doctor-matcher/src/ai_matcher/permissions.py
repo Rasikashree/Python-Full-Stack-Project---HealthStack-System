@@ -1,3 +1,0 @@
-{
-  "symptoms": ["fever", "cough"]
-}

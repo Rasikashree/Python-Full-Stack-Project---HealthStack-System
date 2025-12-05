@@ -466,8 +466,10 @@
                             <i class="far fa-money-bill-alt"></i>
                             {% if doctor.consultation_fee %}
                               {{ doctor.consultation_fee }} INR
+                            {% elif doctor.report_fee %}
+                              {{ doctor.report_fee }} INR
                             {% else %}
-                              Not Available
+                              0 INR
                             {% endif %}
                           </li>
                         </ul>

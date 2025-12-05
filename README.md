@@ -21,14 +21,15 @@
       1)  Search multiple Hospital → Department List → Search for Doctors
       2)  Doctor Profile → Book Appointment
       3)  Pay Appointment + Mail Confirmation 
-      4)  Search all Doctors in all hospitals
-      5)  Chat with appointed Doctor
-      6)  View Prescription, Download Prescription (PDF)
-      7)  Choose which tests to pay (Cart System, payment + mail confirmation)
-      8)  View Report, Download Report (PDF)
-      9)  Give Doctor Review
-      10) Search for Medicines in Medical Shop (Pharmacy)
-      11) Select which medicines to purchase (Cart system), pay total amount for medicines (payment + mail confirmation)
+      4)  AI Chatbot for appointment booking based on symptoms checker recommending doctors
+      5)  Search all Doctors in all hospitals
+      6)  Chat with appointed Doctor
+      7)  View Prescription, Download Prescription (PDF)
+      8)  Choose which tests to pay (Cart System, payment + mail confirmation)
+      9)  View Report, Download Report (PDF)
+      10)  Give Doctor Review
+      11) Search for Medicines in Medical Shop (Pharmacy)
+      12) Select which medicines to purchase (Cart system), pay total amount for medicines (payment + mail confirmation)
       
 ### Doctor 
       1)  Doctor Profile Settings (Add More feature)
@@ -100,66 +101,39 @@
 
 ## Home page
 
-<img src="https://user-images.githubusercontent.com/64092765/191188204-39dc320f-ec0f-4634-a8db-4735fd89cec9.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (457).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191188212-a48d1616-42ec-4413-bb7f-cf0d6347b165.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (458).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191188230-2a57e567-a879-487f-a907-8e6add15c8ca.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (459).png" width="50%">
 
-
+<img src="staticfiles\images\readme\Screenshot (460).png" width="50%">
 ## Patient
 
-<img src="https://user-images.githubusercontent.com/64092765/191187372-0ea1bc75-aeee-4d2a-8624-27877d213753.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (463).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191187384-46f21266-3550-42a9-b3c9-17b19e870608.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (464).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191187390-b5dd8bbb-b7e6-4ba6-9423-71e93332e020.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (465).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191187405-73b06afa-10ac-46b2-9138-8eb077401d5b.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (466).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191187428-1445ca78-626d-4b00-8bc6-ce8639f2c303.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (468).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191187437-e415ed6b-cddc-4862-b34c-6ce59a75c72d.png" width="50%">
 
 ## Doctor
 
-<img src="https://user-images.githubusercontent.com/64092765/191187476-aae75261-0298-4d13-bc19-d2db8918c1f6.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (470).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191187496-f1e0e7e4-ecd4-4c5d-8fdf-abc77a7d2031.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (471).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191187508-d03649a8-00ba-4c4c-a4a5-8a17a6fa196f.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (473).png" width="50%">
 
 ## Hospital Admin
 
-<img src="https://user-images.githubusercontent.com/64092765/191187604-4985a19c-c292-47a9-a21b-befd03500dae.png" width="50%">
+<img src="staticfiles\images\readme\Screenshot (474).png" width="50%">
 
-<img src="https://user-images.githubusercontent.com/64092765/191187692-05edf07b-a94f-4723-9e95-6b5c04cf03d8.png" width="50%">
-
-<img src="https://user-images.githubusercontent.com/64092765/191187722-820d572b-2a20-4fd1-bc5b-70af699c43b7.png" width="50%">
-
-## Pharmacist and Pharmacy
-
-<img src="https://user-images.githubusercontent.com/64092765/191187822-6468adf2-c3ca-470a-87e7-1360e5415435.png" width="50%">
-
-<img src="https://user-images.githubusercontent.com/64092765/191187869-24175b0d-38b2-41ff-9eb7-c793b8af0aa1.png" width="50%">
-
-<img src="https://user-images.githubusercontent.com/64092765/191187883-dfd52812-b521-467d-9094-d5ff75f36492.png" width="50%">
-
-<img src="https://user-images.githubusercontent.com/64092765/191187934-cfec116d-9a4d-420a-8270-6edab947ba95.png" width="50%">
-
-### Lab Worker
-
-<img src="https://user-images.githubusercontent.com/64092765/191188113-f9bb37ae-30a2-46b3-a871-e3ca5aa3df47.png" width="50%">
-
-<img src="https://user-images.githubusercontent.com/64092765/191188138-2dd284c8-a815-4060-87f3-61ffd7c2300d.png" width="50%">
-
-
-# [Champion in UIU CSE Project Show Summer 2022 - Software Engineering Laboratory](https://www.facebook.com/100080783675315/posts/pfbid0TuQyeVT9LHJx4zCnCpaDsAGFnCGxSTMKa8Fd1XCNcpf3n1yXf6ceQQTYQ1DeahSZl/)
-
-<img src="https://user-images.githubusercontent.com/64092765/192018455-de998881-ac7e-4082-a8c6-3a36a59aef94.jpg" width="75%">
-
-<img src="https://user-images.githubusercontent.com/64092765/191054866-189bb76f-3377-440a-84be-d07578a26c35.jpg" width="50%">
-
+<img src="staticfiles\images\readme\Screenshot (475).png" width="50%">
 
 
 

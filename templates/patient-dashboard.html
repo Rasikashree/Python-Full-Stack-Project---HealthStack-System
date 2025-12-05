@@ -147,11 +147,19 @@
                                         href="doctor-profile.html"
                                         class="avatar avatar-sm mr-2"
                                       >
+                                        {% if appointment.doctor.featured_image %}
                                         <img
                                           class="avatar-img rounded-circle"
                                           src="{{ appointment.doctor.featured_image.url }}"
-                                          alt="User Image"
+                                          alt="Doctor Image"
                                         />
+                                        {% else %}
+                                        <img
+                                          class="avatar-img rounded-circle"
+                                          src="{% static 'HealthStack-System/images/Normal/default-doctor.png' %}"
+                                          alt="Doctor Image"
+                                        />
+                                        {% endif %}
                                       </a>
                                       <a href="doctor-profile.html"
                                         >{{ appointment.doctor.name }}
@@ -175,7 +183,7 @@
                                     {% elif appointment.doctor.report_fee %}
                                       {{ appointment.doctor.report_fee }} INR
                                     {% else %}
-                                      N/A
+                                      0 INR
                                     {% endif %}
                                   </td>
                                   {% else %}
@@ -185,7 +193,7 @@
                                     {% elif appointment.doctor.consultation_fee %}
                                       {{ appointment.doctor.consultation_fee }} INR
                                     {% else %}
-                                      N/A
+                                      0 INR
                                     {% endif %}
                                   </td>
                                   {% endif %}
@@ -245,11 +253,19 @@
                                         href="doctor-profile.html"
                                         class="avatar avatar-sm mr-2"
                                       >
+                                        {% if prescription.doctor.featured_image %}
                                         <img
                                           class="avatar-img rounded-circle"
-                                          src="{{prescription.doctor.featured_image.url }}"
-                                          alt="User Image"
+                                          src="{{ prescription.doctor.featured_image.url }}"
+                                          alt="Doctor Image"
                                         />
+                                        {% else %}
+                                        <img
+                                          class="avatar-img rounded-circle"
+                                          src="{% static 'HealthStack-System/images/Normal/default-doctor.png' %}"
+                                          alt="Doctor Image"
+                                        />
+                                        {% endif %}
                                       </a>
                                       <a href="doctor-profile.html"
                                         >Dr. {{prescription.doctor}}<span>{{prescription.doctor.department_name }}</span></a
@@ -314,11 +330,19 @@
                                         href="doctor-profile.html"
                                         class="avatar avatar-sm mr-2"
                                       >
+                                        {% if report.doctor.featured_image %}
                                         <img
                                           class="avatar-img rounded-circle"
-                                          src="{{report.doctor.featured_image.url }}"
-                                          alt="User Image"
+                                          src="{{ report.doctor.featured_image.url }}"
+                                          alt="Doctor Image"
                                         />
+                                        {% else %}
+                                        <img
+                                          class="avatar-img rounded-circle"
+                                          src="{% static 'HealthStack-System/images/Normal/default-doctor.png' %}"
+                                          alt="Doctor Image"
+                                        />
+                                        {% endif %}
                                       </a>
                                       <a href="doctor-profile.html"
                                         >Dr.{{report.doctor}}<span>{{report.doctor.department_name }}</span></a
